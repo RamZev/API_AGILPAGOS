@@ -3,12 +3,13 @@ import httpx
 import logging
 from typing import Optional, Dict, Any
 from datetime import datetime, timedelta
-import asyncio
+# import asyncio
 
 from app.config import Config
 from app.core.security import generate_credentials
 
 logger = logging.getLogger(__name__)
+
 
 class AgilpagosClient:
 	"""
@@ -18,9 +19,9 @@ class AgilpagosClient:
 	
 	def __init__(self):
 		self.base_url = Config.AGILPAGOS_BASE_URL
-		self.id_entidad = Config.ID_ENTIDAD
-		self.username = Config.USERNAME
-		self.password = Config.PASSWORD
+		self.id_entidad = Config.API_SG_ID_ENTIDAD
+		self.username = Config.API_SG_USERNAME
+		self.password = Config.API_SG_PASSWORD
 		
 		self._token: Optional[str] = None
 		self._token_expiration: Optional[datetime] = None
@@ -196,8 +197,10 @@ class AgilpagosClient:
 		
 		return {}
 
+
 # Singleton para reutilizar en toda la aplicación
 agilpagos_client = AgilpagosClient()
+
 
 # Importar time para el backoff
 import time

@@ -7,7 +7,7 @@ from app.config import Config
 from app.routers import auth, onboarding
 from app.core.http_client import agilpagos_client
 
-# Configurar logging
+#-- Configurar logging.
 logging.basicConfig(
 	level=getattr(logging, Config.LOG_LEVEL),
 	format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
@@ -21,38 +21,38 @@ async def lifespan(app: FastAPI):
 	Maneja el ciclo de vida de la aplicación.
 	Se ejecuta al iniciar y al cerrar la API.
 	"""
-	# Inicio: Verificar conexión con Agilpagos
+	#-- Inicio: Verificar conexión con Agilpagos.
 	logger.info("🚀 Iniciando API Intermedia - Agilpagos")
 	logger.info(f"📡 Entorno: {Config.ENVIRONMENT}")
 	logger.info(f"🔗 Agilpagos URL: {Config.AGILPAGOS_BASE_URL}")
 	
-	# Intentar obtener token de Agilpagos para verificar conexión
-	try:
-		agilpagos_client._get_token()
-		logger.info("✅ Conexión con Agilpagos establecida")
-	except Exception as e:
-		logger.warning(f"⚠️ No se pudo conectar con Agilpagos: {e}")
+	# #-- Intentar obtener token de Agilpagos para verificar conexión.
+	# try:
+	# 	agilpagos_client._get_token()
+	# 	logger.info("✅ Conexión con Agilpagos establecida")
+	# except Exception as e:
+	# 	logger.warning(f"⚠️ No se pudo conectar con Agilpagos: {e}")
 	
 	yield
 	
-	# Cierre
+	#-- Cierre.
 	logger.info("👋 Cerrando API Intermedia")
 
-# Crear aplicación
+#-- Crear aplicación.
 app = FastAPI(
-	title="API Intermedia - Agilpagos",
-	description="API Intermedia para consumir los servicios de Agilpagos",
+	title="API Gateway - Agilpagos",
+	description="API Gateway para consumir los servicios de Agilpagos",
 	version="1.0.0",
 	lifespan=lifespan,
 	docs_url="/docs" if not Config.is_production() else None,
 	redoc_url="/redoc" if not Config.is_production() else None,
 )
 
-# Configurar CORS
+#-- Configurar CORS.
 app.add_middleware(
 	CORSMiddleware,
 	allow_origins=["*"] if Config.is_development() else [
-		# En producción, agregar dominios específicos
+		#-- En producción, agregar dominios específicos.
 		"https://tudominio.com"
 	],
 	allow_credentials=True,
@@ -60,14 +60,14 @@ app.add_middleware(
 	allow_headers=["*"],
 )
 
-# Incluir routers
+#-- Incluir routers.
 app.include_router(auth.router)
 app.include_router(onboarding.router)
 
 @app.get("/")
 async def root():
 	return {
-		"message": "API Intermedia - Agilpagos",
+		"message": "API Gateway - Agilpagos",
 		"version": "1.0.0",
 		"environment": Config.ENVIRONMENT,
 		"status": "operational",
@@ -84,7 +84,7 @@ async def health_check():
 		"agilpagos_connected": False
 	}
 	
-	# Verificar conexión con Agilpagos
+	#-- Verificar conexión con Agilpagos.
 	try:
 		agilpagos_client._get_token()
 		health_status["agilpagos_connected"] = True

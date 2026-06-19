@@ -15,11 +15,11 @@ class Config:
 	AGILPAGOS_BASE_URL = os.getenv("AGILPAGOS_BASE_URL", "http://localhost:8000")
 	
 	# Credenciales de Agilpagos
-	ID_ENTIDAD = os.getenv("ID_ENTIDAD")
-	APP_ID = os.getenv("APP_ID")
-	API_KEY = os.getenv("API_KEY")
-	USERNAME = os.getenv("USERNAME")
-	PASSWORD = os.getenv("PASSWORD")
+	API_SG_ID_ENTIDAD = os.getenv("API_SG_ID_ENTIDAD")
+	API_SG_APP_ID = os.getenv("API_SG_APP_ID")
+	API_SG_API_KEY = os.getenv("API_SG_API_KEY")
+	API_SG_USERNAME = os.getenv("API_SG_USERNAME")
+	API_SG_PASSWORD = os.getenv("API_SG_PASSWORD")
 	
 	# Configuración de la API
 	API_PORT = int(os.getenv("API_PORT", 8080))
@@ -39,8 +39,8 @@ class Config:
 	def validate(cls):
 		"""Valida que las credenciales necesarias estén configuradas"""
 		required = [
-			"ID_ENTIDAD", "APP_ID", "API_KEY", 
-			"USERNAME", "PASSWORD", "JWT_SECRET_KEY"
+			"API_SG_ID_ENTIDAD", "API_SG_APP_ID", "API_SG_API_KEY", 
+			"API_SG_USERNAME", "API_SG_PASSWORD", "JWT_SECRET_KEY"
 		]
 		missing = [field for field in required if not getattr(cls, field)]
 		if missing:
