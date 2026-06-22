@@ -1,11 +1,13 @@
-from contextlib import asynccontextmanager
+# app\main.py
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from contextlib import asynccontextmanager
 import logging
 
 from app.config import Config
 from app.routers import auth, onboarding
 from app.core.http_client import agilpagos_client
+
 
 #-- Configurar logging.
 logging.basicConfig(
@@ -15,6 +17,7 @@ logging.basicConfig(
 
 logger = logging.getLogger(__name__)
 
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
 	"""
@@ -22,7 +25,7 @@ async def lifespan(app: FastAPI):
 	Se ejecuta al iniciar y al cerrar la API.
 	"""
 	#-- Inicio: Verificar conexión con Agilpagos.
-	logger.info("🚀 Iniciando API Intermedia - Agilpagos")
+	logger.info("🚀 Iniciando API Gateway - Agilpagos")
 	logger.info(f"📡 Entorno: {Config.ENVIRONMENT}")
 	logger.info(f"🔗 Agilpagos URL: {Config.AGILPAGOS_BASE_URL}")
 	
@@ -36,12 +39,13 @@ async def lifespan(app: FastAPI):
 	yield
 	
 	#-- Cierre.
-	logger.info("👋 Cerrando API Intermedia")
+	logger.info("👋 Cerrando API Gateway - Agilpagos")
+
 
 #-- Crear aplicación.
 app = FastAPI(
 	title="API Gateway - Agilpagos",
-	description="API Gateway para consumir los servicios de Agilpagos",
+	description="API Gateway para consumir los servicios de la API Agilpagos",
 	version="1.0.0",
 	lifespan=lifespan,
 	docs_url="/docs" if not Config.is_production() else None,
@@ -63,6 +67,7 @@ app.add_middleware(
 #-- Incluir routers.
 app.include_router(auth.router)
 app.include_router(onboarding.router)
+
 
 @app.get("/")
 async def root():

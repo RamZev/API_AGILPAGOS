@@ -4,11 +4,14 @@
 import logging
 from typing import Dict, Any, Optional
 
+from fastapi.concurrency import run_in_threadpool
 from app.core.http_client import agilpagos_client
 from app.models.onboarding import UsuarioAltaRequest
 from app.core.exceptions import AgilpagosValidationError
 
+
 logger = logging.getLogger(__name__)
+
 
 class OnboardingService:
 	"""Servicio para manejar el alta de usuarios y CVU"""
@@ -32,7 +35,8 @@ class OnboardingService:
 			Datos del usuario si existe, None si no existe
 		"""
 		try:
-			response = await agilpagos_client.request(
+			response = await run_in_threadpool(
+			agilpagos_client.request,
 				method="GET",
 				endpoint=f"/Usuarios/{cuit}/UsuarioByCuit"
 			)
@@ -43,8 +47,8 @@ class OnboardingService:
 			return None
 			
 		except Exception as e:
-			# Si el error es 404, el usuario no existe
-			if hasattr(e, 'status_code') and e.status_code == 404:
+			status_code = getattr(e, "status_code", None)
+			if status_code == 404:
 				return None
 			logger.error(f"Error al verificar usuario: {e}")
 			raise
@@ -77,7 +81,8 @@ class OnboardingService:
 		
 		# 3. Llamar a la API de Agilpagos
 		try:
-			response = await agilpagos_client.request(
+			response = await run_in_threadpool(
+			agilpagos_client.request,
 				method="POST",
 				endpoint="/Usuarios",
 				json=payload

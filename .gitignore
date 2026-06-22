@@ -1,4 +1,4 @@
-# Python-generated files
+#-- Python-generated files.
 __pycache__/
 *.py[oc]
 *.py[cod]
@@ -7,15 +7,18 @@ dist/
 wheels/
 *.egg-info
 
-# Virtual environments
+#-- Virtual environments.
 .venv
 
-# uv
+#-- uv.
 uv.lock
 
-# Environment variables
+#-- Environment variables.
 .env
 
-# Logs
+#-- Logs.
 *.log
 logs/
+
+#-- Otros.
+trash/

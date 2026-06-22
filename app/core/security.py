@@ -9,6 +9,7 @@ from datetime import timedelta
 
 from app.config import Config
 
+
 ''' generate_credentials (Original) ---------------------------
 def generate_credentials(username: str, password: str) -> dict:
 	"""

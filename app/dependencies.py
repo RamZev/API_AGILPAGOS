@@ -10,6 +10,7 @@ from app.core.exceptions import TokenExpiredError, TokenInvalidError
 
 security = HTTPBearer()
 
+
 async def get_current_user(
 	credentials: HTTPAuthorizationCredentials = Depends(security)
 ):
@@ -34,6 +35,7 @@ async def get_current_user(
 			detail="Token inválido",
 			headers={"WWW-Authenticate": "Bearer"},
 		)
+
 
 async def get_optional_user(
 	credentials: Optional[HTTPAuthorizationCredentials] = Depends(security)

@@ -1,6 +1,8 @@
-from pydantic import BaseModel, Field, validator
+# app\models\onboarding.py
+from pydantic import BaseModel, Field, field_validator
 from typing import Optional
 from datetime import date
+
 
 class UsuarioAltaRequest(BaseModel):
 	"""Request para el alta de usuario (lo que recibe tu API Intermedia)"""
@@ -35,7 +37,7 @@ class UsuarioAltaRequest(BaseModel):
 	idOcupacion: str
 	numeroCuentaEntidad: str
 	
-	@validator('fechaNacimiento')
+	@field_validator('fechaNacimiento')
 	def validate_age(cls, v):
 		"""Valida que la edad esté entre 13 y 100 años"""
 		today = date.today()
@@ -43,8 +45,8 @@ class UsuarioAltaRequest(BaseModel):
 		if age < 13 or age > 100:
 			raise ValueError(f"La edad ({age}) debe estar entre 13 y 100 años")
 		return v
-	
-	@validator('email')
+
+	@field_validator('email')
 	def validate_email(cls, v):
 		"""Valida formato de email"""
 		import re
@@ -53,13 +55,15 @@ class UsuarioAltaRequest(BaseModel):
 			raise ValueError("Formato de email inválido")
 		return v
 
+
 class UsuarioAltaResponse(BaseModel):
-	"""Respuesta del alta de usuario (lo que devuelve tu API Intermedia)"""
+	"""Respuesta del alta de usuario (lo que devuelve API Intermedia)"""
 	id_usuario: str
 	cvu: str
 	alias: str
 	id_usuario_entidad_lineas_cuentas: str
 	numero_cuenta_entidad: str
+
 
 class UsuarioConsultaResponse(BaseModel):
 	"""Respuesta de consulta de usuario por CUIT"""
@@ -69,6 +73,7 @@ class UsuarioConsultaResponse(BaseModel):
 	apellido: str
 	email: str
 	cvus: list
+
 
 class ErrorResponse(BaseModel):
 	"""Respuesta de error estandarizada"""

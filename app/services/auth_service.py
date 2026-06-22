@@ -1,12 +1,13 @@
 # app/services/auth_service.py
 """Servicio de autenticación y gestión de tokens"""
 
-from datetime import datetime, timedelta
+from datetime import datetime, timezone
 from typing import Optional
 
 from app.config import Config
 from app.core.security import create_jwt_token, verify_jwt_token
 from app.core.exceptions import TokenExpiredError, TokenInvalidError
+
 
 def create_access_token(username: str, user_id: Optional[str] = None) -> str:
 	"""
@@ -24,6 +25,7 @@ def create_access_token(username: str, user_id: Optional[str] = None) -> str:
 		data["user_id"] = user_id
 	
 	return create_jwt_token(data)
+
 
 def verify_access_token(token: str) -> dict:
 	"""
@@ -44,14 +46,15 @@ def verify_access_token(token: str) -> dict:
 	if not payload:
 		raise TokenInvalidError("Token inválido o malformado")
 	
-	# Verificar expiración
+	#-- Verificar expiración.
 	exp = payload.get("exp")
 	if exp:
-		exp_datetime = datetime.fromtimestamp(exp)
-		if exp_datetime < datetime.utcnow():
+		exp_datetime = datetime.fromtimestamp(exp, tz=timezone.utc)
+		if exp_datetime < datetime.now(timezone.utc):
 			raise TokenExpiredError("Token ha expirado")
 	
 	return payload
+
 
 def get_agilpagos_token() -> str:
 	"""

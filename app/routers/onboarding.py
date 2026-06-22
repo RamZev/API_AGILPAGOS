@@ -1,5 +1,6 @@
 # app/routers/onboarding.py
 from fastapi import APIRouter, HTTPException, status, Depends
+from fastapi.concurrency import run_in_threadpool
 from typing import Dict, Any
 
 from app.models.onboarding import (
@@ -48,10 +49,10 @@ async def crear_usuario(
 		
 		# 4. Construir respuesta
 		return UsuarioAltaResponse(
-			id_usuario=response.get("idUsuario"),
-			cvu=response.get("cvu"),
+			id_usuario=response.get("idUsuario", ""),
+			cvu=response.get("cvu", ""),
 			alias=response.get("alias", ""),
-			id_usuario_entidad_lineas_cuentas=response.get("idUsuarioEntidadLineasCuentas"),
+			id_usuario_entidad_lineas_cuentas=response.get("idUsuarioEntidadLineasCuentas", ""),
 			numero_cuenta_entidad=request.numeroCuentaEntidad
 		)
 		
@@ -112,8 +113,11 @@ async def get_datos_maestros():
 		result = {}
 		for key, endpoint in endpoints.items():
 			try:
-				# ¡USAR await PORQUE ES ASÍNCRONO!
-				result[key] = await agilpagos_client.request("GET", endpoint)
+				result[key] = await run_in_threadpool(
+					agilpagos_client.request,
+					"GET",
+					endpoint
+				)
 			except Exception as e:
 				result[key] = {"error": str(e)}
 		
