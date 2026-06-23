@@ -54,10 +54,12 @@ def generate_credentials(username: str, password: str) -> dict:
 	print(f"created: {created}")
 	
 	return {
+		"idEntidad": Config.API_SG_ID_ENTIDAD,
 		"userName": username,
 		"password": hashed_password,
 		"nonce": nonce_b64_str,
-		"created": created
+		"created": created,
+		"cuit": Config.API_SG_CUIT_ENTIDAD
 	}
 
 

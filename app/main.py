@@ -9,7 +9,7 @@ from app.config import Config
 from app.routers import auth, maestros, onboarding
 from app.core.http_client import agilpagos_client
 from app.core.security import generate_credentials
-from models.auth import CredentialsRequest, GetTokenManualRequest
+from app.models.auth import CredentialsRequest, GetTokenManualRequest
 
 
 #-- Configurar logging.
