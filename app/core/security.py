@@ -47,10 +47,12 @@ def generate_credentials(username: str, password: str) -> dict:
 	hashed_password = base64.b64encode(sha1_hash).decode("utf-8")
 	
 	return {
+		"idEntidad": Config.API_SG_ID_ENTIDAD,
 		"userName": username,
 		"password": hashed_password,
 		"nonce": nonce_b64_str,
-		"created": created
+		"created": created,
+		"cuit": Config.API_SG_CUIT_ENTIDAD
 	}
 
 
