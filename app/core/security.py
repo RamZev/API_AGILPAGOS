@@ -25,9 +25,8 @@ def generate_credentials(username: str, password: str) -> dict:
 		Diccionario con username, password (hasheada), nonce y created
 	"""
 	#-- Generar la fecha UTC en formato ISO sin 'Z' (se agregará al final).
-	# fecha_base = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%S")
-	# created = fecha_base + "Z"
-	created = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%S") + "Z"
+	fecha_base = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%S")
+	created = fecha_base + "Z"
 	
 	#-- Generar un nonce real de 16 bytes binarios (UUID4) y codificarlo en Base64 string.
 	nonce_bytes_original = uuid.uuid4().bytes  #-- 16 bytes puros.
@@ -36,9 +35,8 @@ def generate_credentials(username: str, password: str) -> dict:
 	#-- Preparar los inputs para el Hash.
 	#-- Se obtienen los 16 bytes binarios a partir del Base64 string.
 	nonce_hash_bytes = base64.b64decode(nonce_b64_str)
-	# La fecha se procesa en bytes SIN la 'Z'
-	# created_hash_bytes = fecha_base.encode("utf-8")
-	created_hash_bytes = created.encode("utf-8")
+	#-- La fecha se procesa en bytes SIN la 'Z'.
+	created_hash_bytes = fecha_base.encode("utf-8")
 	password_bytes = password.encode("utf-8")
 	
 	#-- Concatenar: nonce (16 bytes) + fecha (sin Z) + password.
@@ -47,11 +45,6 @@ def generate_credentials(username: str, password: str) -> dict:
 	#-- Calcular el hash SHA1 y codificar el resultado en Base64.
 	sha1_hash = hashlib.sha1(concatenated).digest()
 	hashed_password = base64.b64encode(sha1_hash).decode("utf-8")
-	
-	print(f"username: {username}")
-	print(f"password: {hashed_password}")
-	print(f"nonce: {nonce_b64_str}")
-	print(f"created: {created}")
 	
 	return {
 		"userName": username,
