@@ -5,7 +5,7 @@ from contextlib import asynccontextmanager
 import logging
 
 from app.config import Config
-from app.routers import auth, onboarding
+from app.routers import auth, maestros, onboarding
 from app.core.http_client import agilpagos_client
 
 
@@ -66,6 +66,7 @@ app.add_middleware(
 
 #-- Incluir routers.
 app.include_router(auth.router)
+app.include_router(maestros.router)
 app.include_router(onboarding.router)
 
 

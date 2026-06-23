@@ -10,10 +10,13 @@ from app.models.onboarding import (
 	ErrorResponse
 )
 from app.services.onboarding_service import OnboardingService
+from app.services.maestros_service import MaestrosService
 from app.dependencies import get_current_user
-from app.core.http_client import agilpagos_client  # <--- ¡AGREGAR ESTA IMPORTACIÓN!
+from app.core.http_client import agilpagos_client
+
 
 router = APIRouter(prefix="/onboarding", tags=["Onboarding"])
+
 
 @router.post("/usuario", response_model=UsuarioAltaResponse)
 async def crear_usuario(
@@ -67,6 +70,7 @@ async def crear_usuario(
 			detail=f"Error al crear usuario: {str(e)}"
 		)
 
+
 @router.get("/usuario/{cuit}")
 async def consultar_usuario(cuit: str):
 	"""
@@ -92,6 +96,7 @@ async def consultar_usuario(cuit: str):
 			detail=f"Error al consultar usuario: {str(e)}"
 		)
 
+
 @router.get("/datos-maestros")
 async def get_datos_maestros():
 	"""
@@ -100,28 +105,7 @@ async def get_datos_maestros():
 	ocupaciones y motivos PEP.
 	"""
 	try:
-		# Agrupar las llamadas a Agilpagos
-		endpoints = {
-			"nacionalidades": "/OnBoarding/Nacionalidades",
-			"provincias": "/OnBoarding/Provincias/País/AC98A1E7-CF65-4430-BF16-24439F35853B",
-			"estados_civiles": "/OnBoarding/EstadoCivil",
-			"condiciones_fiscales": "/OnBoarding/CondicionesFiscales",
-			"ocupaciones": "/OnBoarding/Ocupaciones",
-			"motivos_pep": "/OnBoarding/MotivosPEP"
-		}
-		
-		result = {}
-		for key, endpoint in endpoints.items():
-			try:
-				result[key] = await run_in_threadpool(
-					agilpagos_client.request,
-					"GET",
-					endpoint
-				)
-			except Exception as e:
-				result[key] = {"error": str(e)}
-		
-		return result
+		return await MaestrosService.get_all()
 		
 	except Exception as e:
 		raise HTTPException(
