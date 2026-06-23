@@ -36,6 +36,7 @@ class AgilpagosClient:
 	async def _get_token(self) -> str:
 		"""Obtiene un token Bearer válido, renovándolo si es necesario"""
 		if not self._token or self._is_token_expired():
+			print("*-- Va a resfrescar el token")
 			await self._refresh_token()
 		return self._token
 	
@@ -50,12 +51,13 @@ class AgilpagosClient:
 		"""Renueva el token usando refreshToken si está disponible, o login completo"""
 		if self._refresh_token_value:
 			try:
+				print("*-- Va a resfrescar el token con _refresh_with_refresh_token()")
 				await self._refresh_with_refresh_token()
 				return
 			except Exception as e:
 				logger.warning(f"⚠️ Falló renovación con refreshToken: {e}")
 				logger.info("🔄 Intentando login completo como fallback...")
-		
+		print("*-- Va a resfrescar el token con _refresh_with_login()")
 		await self._refresh_with_login()
 	
 	async def _refresh_with_refresh_token(self):

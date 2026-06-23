@@ -7,6 +7,7 @@ import logging
 from app.config import Config
 from app.routers import auth, maestros, onboarding
 from app.core.http_client import agilpagos_client
+from app.core import security
 
 
 #-- Configurar logging.
@@ -92,14 +93,26 @@ async def health_check():
 	
 	#-- Verificar conexión con Agilpagos.
 	try:
+		print("intenta tomar el token")
 		agilpagos_client._get_token()
 		health_status["agilpagos_connected"] = True
+		print("El token", agilpagos_client._token)
 	except Exception:
 		health_status["agilpagos_connected"] = False
 		if Config.is_production():
 			health_status["status"] = "degraded"
 	
 	return health_status
+
+@app.post("/get-credentials")
+async def get_credentials(username: str, password: str):
+	""" Endpoint para obtener las credenciales requeridas para la solicitud del token Bearer en Agilpagos."""
+	creds = security.generate_credentials(username=username, password=password)
+	return creds
+
+@app.post("/get-token")
+async def get_token()
+
 
 def main():
 	"""Punto de entrada para ejecutar con el comando 'api-agilpagos'"""
