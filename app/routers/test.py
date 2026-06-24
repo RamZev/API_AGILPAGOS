@@ -40,6 +40,7 @@ async def health_check():
 		await agilpagos_client._get_token()
 		health_status["agilpagos_connected"] = True
 		print("El token", agilpagos_client._token)
+		print("El expiration", agilpagos_client._token_expiration)
 	except Exception:
 		health_status["agilpagos_connected"] = False
 		if Config.is_production():

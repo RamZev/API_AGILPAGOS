@@ -3,7 +3,7 @@ import httpx
 import logging
 import time
 from typing import Optional, Dict, Any
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 from app.config import Config
 from app.core.security import generate_credentials
@@ -45,7 +45,15 @@ class AgilpagosClient:
 		if not self._token_expiration:
 			return True
 		margin = timedelta(minutes=5)
-		return datetime.now() >= (self._token_expiration - margin)
+		# Use UTC-aware comparison to avoid mixing naive and aware datetimes
+		now_utc = datetime.now(timezone.utc)
+		exp = self._token_expiration
+		if exp.tzinfo is None:
+			# Treat naive datetimes as UTC
+			exp = exp.replace(tzinfo=timezone.utc)
+		else:
+			exp = exp.astimezone(timezone.utc)
+		return now_utc >= (exp - margin)
 	
 	async def _refresh_token(self):
 		"""Renueva el token usando refreshToken si está disponible, o login completo"""
