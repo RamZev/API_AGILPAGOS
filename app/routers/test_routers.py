@@ -1,4 +1,4 @@
-# app/routers/test.py
+# app\routers\test_routers.py
 from fastapi import APIRouter
 import httpx
 import logging
@@ -6,7 +6,7 @@ import logging
 from app.config import Config
 from app.core.http_client import agilpagos_client
 from app.core.security import generate_credentials
-from app.models.auth import CredentialsRequest, GetTokenManualRequest
+from app.models.auth_models import CredentialsRequest, GetTokenManualRequest
 
 
 logger = logging.getLogger(__name__)

@@ -45,11 +45,11 @@ class AgilpagosClient:
 		if not self._token_expiration:
 			return True
 		margin = timedelta(minutes=5)
-		# Use UTC-aware comparison to avoid mixing naive and aware datetimes
+		#-- Usar comparaciones con conciencia de UTC para evitar mezclar objetos datetime con y sin información de zona horaria.
 		now_utc = datetime.now(timezone.utc)
 		exp = self._token_expiration
 		if exp.tzinfo is None:
-			# Treat naive datetimes as UTC
+			#-- Trata los objetos datetime sin zona horaria como UTC.
 			exp = exp.replace(tzinfo=timezone.utc)
 		else:
 			exp = exp.astimezone(timezone.utc)

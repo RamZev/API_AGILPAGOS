@@ -5,7 +5,7 @@ from contextlib import asynccontextmanager
 import logging
 
 from app.config import Config
-from app.routers import auth, maestros, onboarding, test
+from app.routers import auth_routers, maestros_router, onboarding_routers, test_routers
 
 
 #-- Configurar logging.
@@ -64,10 +64,10 @@ app.add_middleware(
 )
 
 #-- Incluir routers.
-app.include_router(auth.router)
-app.include_router(maestros.router)
-app.include_router(onboarding.router)
-app.include_router(test.router)
+app.include_router(auth_routers.router)
+app.include_router(maestros_router.router)
+app.include_router(onboarding_routers.router)
+app.include_router(test_routers.router)
 
 def main():
 	"""Punto de entrada para ejecutar con el comando 'api-agilpagos'"""

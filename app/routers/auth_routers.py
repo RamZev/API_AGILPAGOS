@@ -1,7 +1,7 @@
-# app/routers/auth.py
+# app\routers\auth_routers.py
 from fastapi import APIRouter, HTTPException, status
 
-from app.models.auth import LoginRequest, LoginResponse
+from app.models.auth_models import LoginRequest, LoginResponse
 from app.services.auth_service import create_access_token, verify_access_token
 from app.core.http_client import agilpagos_client
 

@@ -6,7 +6,7 @@ from typing import Dict, Any, Optional
 
 from fastapi.concurrency import run_in_threadpool
 from app.core.http_client import agilpagos_client
-from app.models.onboarding import UsuarioAltaRequest
+from app.models.onboarding_models import UsuarioAltaRequest
 from app.core.exceptions import AgilpagosValidationError
 
 

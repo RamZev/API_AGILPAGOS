@@ -1,9 +1,9 @@
-# app\routers\maestros.py
+# app\routers\maestros_router.py
 from fastapi import APIRouter, HTTPException, status
 
 from app.services.maestros_service import MaestrosService
 from app.dependencies import get_current_user
-from app.models.maestros import DatosMaestrosResponse
+from app.models.maestros_models import DatosMaestrosResponse
 
 
 router = APIRouter(prefix="/maestros", tags=["Datos Maestros"])
