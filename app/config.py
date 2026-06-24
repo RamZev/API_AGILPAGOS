@@ -51,6 +51,7 @@ class Config:
 		"""Valida que las credenciales necesarias estén configuradas"""
 		required = [
 			"AGILPAGOS_BASE_URL",
+			"MAASOFT_BASE_URL",
 			"API_SG_ID_ENTIDAD",
 			"API_SG_APP_ID",
 			"API_SG_API_KEY", 

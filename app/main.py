@@ -74,7 +74,9 @@ app.include_router(auth_routers.router)
 app.include_router(maestros_router.router)
 app.include_router(onboarding_routers.router)
 app.include_router(test_routers.router)
-app.include_router(maasoft_routers.router)
+
+if not Config.is_production():
+	app.include_router(maasoft_routers.router)
 
 def main():
 	"""Punto de entrada para ejecutar con el comando 'api-agilpagos'"""

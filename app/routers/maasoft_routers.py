@@ -3,7 +3,7 @@ from fastapi import APIRouter, HTTPException, status
 import httpx
 # import logging
 
-from app.config import Config
+# from app.config import Config
 from app.models.maasoft_models import SocioResponse
 from app.services.maasoft_service import MaaSoftService
 # from app.dependencies
@@ -45,12 +45,12 @@ async def get_socio_cuit(
 		elif e.response.status_code >= 500:
 			raise HTTPException(
 				status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
-				detail=f"Error en el servidor de MaaSoft: {e.response.text}"
+				detail=f"Error en el servidor de MAASoft: {e.response.text}"
 			)
 		else:
 			raise HTTPException(
 				status_code=status.HTTP_400_BAD_REQUEST,
-				detail=f"Error al consultar MaaSoft: {e.response.text}"
+				detail=f"Error al consultar MAASoft: {e.response.text}"
 			)
 			
 	except Exception as e:
@@ -92,12 +92,12 @@ async def get_socio_codigo(
 		elif e.response.status_code >= 500:
 			raise HTTPException(
 				status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
-				detail=f"Error en el servidor de MaaSoft: {e.response.text}"
+				detail=f"Error en el servidor de MAASoft: {e.response.text}"
 			)
 		else:
 			raise HTTPException(
 				status_code=status.HTTP_400_BAD_REQUEST,
-				detail=f"Error al consultar MaaSoft: {e.response.text}"
+				detail=f"Error al consultar MAASoft: {e.response.text}"
 			)
 			
 	except Exception as e:

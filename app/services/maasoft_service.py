@@ -11,9 +11,9 @@ logger = logging.getLogger(__name__)
 
 
 class MaaSoftService:
-	"""Servicio para consumir la API de MaaSoft (sistema de socios)"""
+	"""Servicio para consumir la API de MAASoft (Sistema de Socios)"""
 	
-	#-- URL base de la API de MaaSoft.
+	#-- URL base de la API de MAASoft.
 	BASE_URL = Config.MAASOFT_BASE_URL
 	
 	@classmethod
@@ -40,7 +40,7 @@ class MaaSoftService:
 				response.raise_for_status()
 				
 				data = response.json()
-				logger.debug(f"Respuesta de MaaSoft: {data}")
+				logger.debug(f"Respuesta de MAASoft: {data}")
 				
 				#-- Convertir a modelo Pydantic.
 				socio = SocioResponse(**data)
@@ -79,7 +79,7 @@ class MaaSoftService:
 				response.raise_for_status()
 				
 				data = response.json()
-				logger.debug(f"Respuesta de MaaSoft: {data}")
+				logger.debug(f"Respuesta de MAASoft: {data}")
 				
 				#-- Convertir a modelo Pydantic.
 				socio = SocioResponse(**data)
@@ -97,7 +97,7 @@ class MaaSoftService:
 	@classmethod
 	async def existe_socio(cls, cuit: int) -> bool:
 		"""
-		Verifica si un socio existe en MaaSoft.
+		Verifica si un socio existe en MAASoft.
 		
 		Args:
 			cuit: CUIT del socio
