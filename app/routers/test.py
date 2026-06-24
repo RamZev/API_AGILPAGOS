@@ -37,7 +37,7 @@ async def health_check():
 	#-- Verificar conexión con Agilpagos.
 	try:
 		print("intenta tomar el token")
-		agilpagos_client._get_token()
+		await agilpagos_client._get_token()
 		health_status["agilpagos_connected"] = True
 		print("El token", agilpagos_client._token)
 	except Exception:

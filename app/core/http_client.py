@@ -33,7 +33,7 @@ class AgilpagosClient:
 		
 		logger.info(f"Cliente Agilpagos inicializado con URL: {self.base_url}")
 	
-	async def _get_token(self) -> str:
+	async def _get_token(self) -> str|None:
 		"""Obtiene un token Bearer válido, renovándolo si es necesario"""
 		if not self._token or self._is_token_expired():
 			print("*-- Va a resfrescar el token")
@@ -96,17 +96,20 @@ class AgilpagosClient:
 		"""Renueva el token haciendo login completo (fallback)"""
 		logger.info("🔄 Renovando token con login completo...")
 		
+		if self.username is None or self.password is None:
+			raise ValueError("Missing API_SG_USERNAME or API_SG_PASSWORD")
+		
 		creds = generate_credentials(self.username, self.password)
 		
 		payload = {
-			"idEntidad": self.id_entidad,
-			"userName": creds["username"],
+			"idEntidad": creds["idEntidad"],
+			"userName": creds["userName"],
 			"password": creds["password"],
 			"nonce": creds["nonce"],
 			"created": creds["created"],
-			"cuit": self.cuit_entidad
+			"cuit": creds["cuit"]
 		}
-		
+		logger.info(f"payload: {payload}")
 		try:
 			response = await self._client.post(
 				f"{self.base_url}/Account/Login",
@@ -186,7 +189,7 @@ class AgilpagosClient:
 				#-- Si el token expiró, renovar y reintentar (solo si requiere auth).
 				if requires_auth and response.status_code == 401:
 					logger.warning("🔑 Token expirado, renovando...")
-					self._refresh_token()
+					await self._refresh_token()
 					request_headers["Authorization"] = f"Bearer {self._token}"
 					continue
 				
