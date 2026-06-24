@@ -29,6 +29,9 @@ class Config:
 	API_SG_ID_TIPO_PERSONA = os.getenv("API_SG_ID_TIPO_PERSONA")
 	API_SG_ID_TIPO_CUENTA = os.getenv("API_SG_ID_TIPO_CUENTA")
 	
+	#-- URLs de Agilpagos.
+	MAASOFT_BASE_URL = os.getenv("MAASOFT_BASE_URL")
+	
 	#-- Configuración de la API.
 	API_PORT = int(os.getenv("API_PORT", 8081))
 	API_HOST = os.getenv("API_HOST", "0.0.0.0")
