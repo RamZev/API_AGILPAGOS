@@ -4,6 +4,7 @@
 import logging
 from typing import Dict, Any, Optional
 
+from app.config import Config
 from fastapi.concurrency import run_in_threadpool
 from app.core.http_client import agilpagos_client
 from app.models.onboarding_models import UsuarioAltaRequest
@@ -16,12 +17,15 @@ logger = logging.getLogger(__name__)
 class OnboardingService:
 	"""Servicio para manejar el alta de usuarios y CVU"""
 	
-	# Valores constantes (según documentación)
-	ID_TIPO_DOCUMENTO = "209C1CAA-C56D-4E03-BB40-E9EF2F319A3F"
-	ID_PAIS_ARGENTINA = "76B19E61-B8DC-40F4-BFAB-422CBFFE5002"
-	ID_TIPO_PERSONA = "20EB917-7CA8-49E0-9E0B-CA8293218ACA"
-	ID_TIPO_CUENTA = "D2483A34-78BE-40A2-B8CB-07AD4BCF6F61"
-	ID_PAIS_BASE = "AC98A1E7-CF65-4430-BF16-24439F35853B"
+	#-- Valores constantes (según documentación).
+	# ID_TIPO_DOCUMENTO = "209C1CAA-C56D-4E03-BB40-E9EF2F319A3F"
+	# ID_PAIS_ARGENTINA = "76B19E61-B8DC-40F4-BFAB-422CBFFE5002"
+	# ID_TIPO_PERSONA = "20EB917-7CA8-49E0-9E0B-CA8293218ACA"
+	# ID_TIPO_CUENTA = "D2483A34-78BE-40A2-B8CB-07AD4BCF6F61"
+	ID_TIPO_DOCUMENTO = Config.API_SG_ID_TIPO_DOCUMENTO
+	ID_PAIS_ARGENTINA = Config.API_SG_ID_PAIS_DOMICILIO
+	ID_TIPO_PERSONA = Config.API_SG_ID_TIPO_PERSONA
+	ID_TIPO_CUENTA = Config.API_SG_ID_TIPO_CUENTA
 	
 	@classmethod
 	async def verificar_usuario_existe(cls, cuit: str) -> Optional[Dict[str, Any]]:
@@ -122,7 +126,7 @@ class OnboardingService:
 			"esUIF": request.esUIF,
 			"leyFATCA": request.leyFATCA,
 			"idPaisNacimiento": request.idPaisNacimiento,
-			"idPaisDomicilio": cls.ID_PAIS_ARGENTINA,  # Solo Argentina permitido
+			"idPaisDomicilio": cls.ID_PAIS_ARGENTINA,
 			"idProvincia": request.idProvincia,
 			"localidad": request.localidad,
 			"calle": request.calle,
