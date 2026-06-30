@@ -3,7 +3,7 @@ import httpx
 import logging
 import time
 from typing import Optional, Dict, Any
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timedelta
 
 from app.config import Config
 from app.core.security import generate_credentials
@@ -36,26 +36,21 @@ class AgilpagosClient:
 	async def _get_token(self) -> str|None:
 		"""Obtiene un token Bearer válido, renovándolo si es necesario"""
 		if not self._token or self._is_token_expired():
-			logger.info("No hay token o está expirado, va a renovarlo")
+			print("*-- Va a resfrescar el token")
 			await self._refresh_token()
 		return self._token
 	
 	def _is_token_expired(self) -> bool:
 		"""Verifica si el token está por expirar (menos de 5 minutos de margen)"""
+		print("*-- viene a comprobar le expiración del token")
 		if not self._token_expiration:
-			logger.error("El token no tiene token_expiration")
 			return True
 		margin = timedelta(minutes=5)
-		#-- Usar comparaciones con conciencia de UTC para evitar mezclar objetos datetime con y sin información de zona horaria.
-		now_utc = datetime.now(timezone.utc)
-		exp = self._token_expiration
-		if exp.tzinfo is None:
-			#-- Trata los objetos datetime sin zona horaria como UTC.
-			exp = exp.replace(tzinfo=timezone.utc)
-		else:
-			exp = exp.astimezone(timezone.utc)
-		logger.info(f"El token ha expirado?: {now_utc >= (exp - margin)}")
-		return now_utc >= (exp - margin)
+		print(f"*-- margin: {margin}")
+		print(f"*-- typ(margin: {margin}")
+		dif = datetime.now() >= (self._token_expiration - margin)
+		print(f"*-- dif: {dif}")
+		return datetime.now() >= (self._token_expiration - margin)
 	
 	async def _refresh_token(self):
 		"""Renueva el token usando refreshToken si está disponible, o login completo"""
@@ -130,12 +125,13 @@ class AgilpagosClient:
 			data = response.json()
 			self._token = data.get("token")
 			self._refresh_token_value = data.get("refreshToken")
+			self._token_expiration = data.get("expiration")
 			
-			exp_str = data.get("expiration")
-			if exp_str:
-				self._token_expiration = datetime.fromisoformat(
-					exp_str.replace("Z", "+00:00")
-				)
+			# exp_str = data.get("expiration")
+			# if exp_str:
+			# 	self._token_expiration = datetime.fromisoformat(
+			# 		exp_str.replace("Z", "+00:00")
+			# 	)
 			
 			logger.info("✅ Token renovado exitosamente con login")
 			
@@ -177,7 +173,7 @@ class AgilpagosClient:
 		#-- Solo agregar Authorization si se requiere.
 		if requires_auth:
 			token = await self._get_token()
-			logger.info(f"El token fue recibido: {token}")
+			logger.info(f"El token fue recibido: {token}")	
 			request_headers["Authorization"] = f"Bearer {token}"
 		
 		if headers:
