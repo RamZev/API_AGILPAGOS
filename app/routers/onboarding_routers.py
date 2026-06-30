@@ -1,20 +1,15 @@
 # app\routers\onboarding_routers.py
-from fastapi import APIRouter, HTTPException, status, Depends
-from typing import Dict, Any
+from fastapi import APIRouter, HTTPException, status
 
 from app.models.onboarding_models import (
 	UsuarioAltaRequest,
 	UsuarioAltaResponse,
-	UsuarioConsultaResponse,
-	ErrorResponse
 )
 from app.services.onboarding_service import OnboardingService
 from app.services.maestros_service import MaestrosService
-from app.dependencies import get_current_user
-from app.core.http_client import agilpagos_client
 
 
-router = APIRouter(prefix="/onboarding", tags=["Onboarding"])
+router = APIRouter(prefix="/onboarding", tags=["Onboarding - Usuarios"])
 
 
 @router.post("/usuario", response_model=UsuarioAltaResponse)
@@ -77,7 +72,6 @@ async def consultar_usuario(cuit: str):
 	Retorna los datos del usuario y sus CVU asociadas.
 	"""
 	try:
-		print(f"El CUIT recibido es: {cuit}")
 		usuario = await OnboardingService.verificar_usuario_existe(cuit)
 		
 		if not usuario:

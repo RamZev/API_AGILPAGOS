@@ -38,17 +38,15 @@ class OnboardingService:
 			Datos del usuario si existe, None si no existe
 		"""
 		try:
-			logger.info(f"El CUIT recibido(2) es: {cuit}")
 			response = await agilpagos_client.request(
 				method="GET",
 				endpoint=f"/Usuarios/{cuit}/UsuarioByCuit"
 			)
-			print(f"El contenido de response: {response}")
+			
 			#-- Si la respuesta contiene datos, el usuario existe.
 			if response:
-				logger.info(f"Encontró es usuario con CUIT: {cuit}")
 				return response
-			logger.info(f"NO se Encontró un usuario con CUIT: {cuit}")
+			
 			return None
 			
 		except Exception as e:

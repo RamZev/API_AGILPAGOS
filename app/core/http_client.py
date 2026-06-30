@@ -36,7 +36,6 @@ class AgilpagosClient:
 	async def _get_token(self) -> str|None:
 		"""Obtiene un token Bearer válido, renovándolo si es necesario"""
 		if not self._token or self._is_token_expired():
-			print("*-- Va a resfrescar el token")
 			await self._refresh_token()
 		return self._token
 	
@@ -47,7 +46,7 @@ class AgilpagosClient:
 			return True
 		margin = timedelta(minutes=5)
 		print(f"*-- margin: {margin}")
-		print(f"*-- typ(margin: {margin}")
+		print(f"*-- type(margin): {type(margin)}")
 		dif = datetime.now() >= (self._token_expiration - margin)
 		print(f"*-- dif: {dif}")
 		return datetime.now() >= (self._token_expiration - margin)
@@ -56,13 +55,12 @@ class AgilpagosClient:
 		"""Renueva el token usando refreshToken si está disponible, o login completo"""
 		if self._refresh_token_value:
 			try:
-				print("*-- Va a resfrescar el token con _refresh_with_refresh_token()")
 				await self._refresh_with_refresh_token()
 				return
 			except Exception as e:
 				logger.warning(f"⚠️ Falló renovación con refreshToken: {e}")
 				logger.info("🔄 Intentando login completo como fallback...")
-		print("*-- Va a resfrescar el token con _refresh_with_login()")
+		
 		await self._refresh_with_login()
 	
 	async def _refresh_with_refresh_token(self):
@@ -127,11 +125,11 @@ class AgilpagosClient:
 			self._refresh_token_value = data.get("refreshToken")
 			self._token_expiration = data.get("expiration")
 			
-			# exp_str = data.get("expiration")
-			# if exp_str:
-			# 	self._token_expiration = datetime.fromisoformat(
-			# 		exp_str.replace("Z", "+00:00")
-			# 	)
+			exp_str = data.get("expiration")
+			if exp_str:
+				self._token_expiration = datetime.fromisoformat(
+					exp_str.replace("Z", "+00:00")
+				)
 			
 			logger.info("✅ Token renovado exitosamente con login")
 			
@@ -173,7 +171,6 @@ class AgilpagosClient:
 		#-- Solo agregar Authorization si se requiere.
 		if requires_auth:
 			token = await self._get_token()
-			logger.info(f"El token fue recibido: {token}")	
 			request_headers["Authorization"] = f"Bearer {token}"
 		
 		if headers:
@@ -192,7 +189,7 @@ class AgilpagosClient:
 					params=params,
 					headers=request_headers
 				)
-				logger.info(f"El response.statuscode es: {response.status_code}")
+				
 				#-- Si el token expiró, renovar y reintentar (solo si requiere auth).
 				if requires_auth and response.status_code == 401:
 					logger.warning("🔑 Token expirado, renovando...")
@@ -208,7 +205,7 @@ class AgilpagosClient:
 				
 				if response.status_code == 204:
 					return {}
-				logger.info(f"el contenido del response es: {response.json()}")
+				
 				return response.json()
 				
 			except httpx.HTTPStatusError as e:
