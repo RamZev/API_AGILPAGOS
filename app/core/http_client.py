@@ -112,7 +112,7 @@ class AgilpagosClient:
 			"created": creds["created"],
 			"cuit": creds["cuit"]
 		}
-		logger.info(f"payload: {payload}")
+		
 		try:
 			response = await self._client.post(
 				f"{self.base_url}/Account/Login",
