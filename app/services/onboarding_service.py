@@ -38,6 +38,7 @@ class OnboardingService:
 			Datos del usuario si existe, None si no existe
 		"""
 		try:
+			logger.info(f"El CUIT recibido(2) es: {cuit}")
 			response = await agilpagos_client.request(
 				method="GET",
 				endpoint=f"/Usuarios/{cuit}/UsuarioByCuit"

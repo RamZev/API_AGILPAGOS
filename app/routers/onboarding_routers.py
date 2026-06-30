@@ -77,6 +77,7 @@ async def consultar_usuario(cuit: str):
 	Retorna los datos del usuario y sus CVU asociadas.
 	"""
 	try:
+		print(f"El CUIT recibido es: {cuit}")
 		usuario = await OnboardingService.verificar_usuario_existe(cuit)
 		
 		if not usuario:
