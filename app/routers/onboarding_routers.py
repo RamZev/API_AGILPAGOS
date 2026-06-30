@@ -1,6 +1,5 @@
 # app\routers\onboarding_routers.py
 from fastapi import APIRouter, HTTPException, status, Depends
-from fastapi.concurrency import run_in_threadpool
 from typing import Dict, Any
 
 from app.models.onboarding_models import (

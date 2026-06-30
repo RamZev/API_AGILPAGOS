@@ -7,11 +7,12 @@ from datetime import date
 class UsuarioAltaRequest(BaseModel):
 	"""Request para el alta de usuario (lo que recibe tu API Intermedia)"""
 	
-	nombre: str = Field(..., max_length=40, description="Nombres y apellidos")
+	nombre: str = Field(..., max_length=40)
 	apellido: str = Field(..., max_length=40)
 	genero: str = Field(..., pattern="^(M|F|X)$")
 	fechaNacimiento: date
 	idNacionalidad: str
+	idTipoDocumento: str
 	numeroDocumento: str
 	numeroTramiteDocumento: str
 	cuit: str = Field(..., pattern="^[0-9]{11}$")
@@ -26,6 +27,7 @@ class UsuarioAltaRequest(BaseModel):
 	esUIF: bool = False
 	leyFATCA: bool = False
 	idPaisNacimiento: str
+	idPaisDomicilio: str
 	idProvincia: str
 	localidad: str
 	calle: str
@@ -34,8 +36,12 @@ class UsuarioAltaRequest(BaseModel):
 	piso: Optional[str] = None
 	departamento: Optional[str] = None
 	observaciones: Optional[str] = None
+	fechaAlta: date
 	idOcupacion: str
 	numeroCuentaEntidad: str
+	idEntidadTipoDocumento: str
+	idTipoPersona:str
+	idTipoCuenta:str
 	
 	@field_validator('fechaNacimiento')
 	def validate_age(cls, v):

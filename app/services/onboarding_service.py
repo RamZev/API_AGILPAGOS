@@ -5,7 +5,6 @@ import logging
 from typing import Dict, Any, Optional
 
 from app.config import Config
-from fastapi.concurrency import run_in_threadpool
 from app.core.http_client import agilpagos_client
 from app.models.onboarding_models import UsuarioAltaRequest
 from app.core.exceptions import AgilpagosValidationError
@@ -39,13 +38,12 @@ class OnboardingService:
 			Datos del usuario si existe, None si no existe
 		"""
 		try:
-			response = await run_in_threadpool(
-			agilpagos_client.request,
+			response = await agilpagos_client.request(
 				method="GET",
 				endpoint=f"/Usuarios/{cuit}/UsuarioByCuit"
 			)
 			
-			# Si la respuesta contiene datos, el usuario existe
+			#-- Si la respuesta contiene datos, el usuario existe.
 			if response and "idUsuario" in response:
 				return response
 			return None
@@ -85,8 +83,7 @@ class OnboardingService:
 		
 		# 3. Llamar a la API de Agilpagos
 		try:
-			response = await run_in_threadpool(
-			agilpagos_client.request,
+			response = await agilpagos_client.request(
 				method="POST",
 				endpoint="/Usuarios",
 				json=payload

@@ -5,5 +5,6 @@ from app.routers import (
 	maestros_router,
 	onboarding_routers,
 	test_routers,
-	maasoft_routers
+	maasoft_routers,
+	cuentas
 )

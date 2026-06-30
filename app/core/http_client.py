@@ -175,6 +175,7 @@ class AgilpagosClient:
 		#-- Solo agregar Authorization si se requiere.
 		if requires_auth:
 			token = await self._get_token()
+			logger.info(f"El token fue recibido: {token}")
 			request_headers["Authorization"] = f"Bearer {token}"
 		
 		if headers:
