@@ -43,7 +43,7 @@ class OnboardingService:
 				method="GET",
 				endpoint=f"/Usuarios/{cuit}/UsuarioByCuit"
 			)
-			
+			print(f"El contenido de response: {response}")
 			#-- Si la respuesta contiene datos, el usuario existe.
 			if response and "idUsuario" in response:
 				logger.info(f"Encontró es usuario con CUIT: {cuit}")
