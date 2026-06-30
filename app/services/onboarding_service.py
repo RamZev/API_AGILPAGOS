@@ -47,7 +47,7 @@ class OnboardingService:
 			if response and "idUsuario" in response:
 				logger.info(f"Encontró es usuario con CUIT: {cuit}")
 				return response
-			logger.info(f"NO Encontró es usuario con CUIT: {cuit}")
+			logger.info(f"NO se Encontró un usuario con CUIT: {cuit}")
 			return None
 			
 		except Exception as e:

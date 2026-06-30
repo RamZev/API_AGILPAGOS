@@ -36,13 +36,14 @@ class AgilpagosClient:
 	async def _get_token(self) -> str|None:
 		"""Obtiene un token Bearer válido, renovándolo si es necesario"""
 		if not self._token or self._is_token_expired():
-			print("*-- Va a resfrescar el token")
+			logger.info("No hay token o está expirado, va a renovarlo")
 			await self._refresh_token()
 		return self._token
 	
 	def _is_token_expired(self) -> bool:
 		"""Verifica si el token está por expirar (menos de 5 minutos de margen)"""
 		if not self._token_expiration:
+			logger.error("El token no tiene token_expiration")
 			return True
 		margin = timedelta(minutes=5)
 		#-- Usar comparaciones con conciencia de UTC para evitar mezclar objetos datetime con y sin información de zona horaria.
@@ -53,6 +54,7 @@ class AgilpagosClient:
 			exp = exp.replace(tzinfo=timezone.utc)
 		else:
 			exp = exp.astimezone(timezone.utc)
+		logger.info(f"El token ha expirado?: {now_utc >= (exp - margin)}")
 		return now_utc >= (exp - margin)
 	
 	async def _refresh_token(self):
