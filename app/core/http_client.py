@@ -192,7 +192,7 @@ class AgilpagosClient:
 					params=params,
 					headers=request_headers
 				)
-				
+				logger.info(f"El response.statuscode es: {response.status_code}")
 				#-- Si el token expiró, renovar y reintentar (solo si requiere auth).
 				if requires_auth and response.status_code == 401:
 					logger.warning("🔑 Token expirado, renovando...")
