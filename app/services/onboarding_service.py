@@ -51,7 +51,7 @@ class OnboardingService:
 			
 		except Exception as e:
 			status_code = getattr(e, "status_code", None)
-			logger.error(f"Fracasó la búsqueda, statuscode: {status_code}")
+			logger.error(f"Fracasó la búsqueda, statuscode: {status_code}, response: {response}")
 			if status_code == 404:
 				return None
 			logger.error(f"Error al verificar usuario: {e}")
