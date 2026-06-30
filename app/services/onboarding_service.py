@@ -3,6 +3,7 @@
 
 import logging
 from typing import Dict, Any, Optional
+import httpx
 
 from app.config import Config
 from app.core.http_client import agilpagos_client
@@ -35,7 +36,7 @@ class OnboardingService:
 			cuit: CUIT del usuario
 			
 		Returns:
-			Datos del usuario si existe, None si no existe
+			Datos del usuario si existe
 		"""
 		try:
 			response = await agilpagos_client.request(
@@ -43,18 +44,25 @@ class OnboardingService:
 				endpoint=f"/Usuarios/{cuit}/UsuarioByCuit"
 			)
 			logger.info(f"El contenido del response: {response}")
-			#-- Si la respuesta contiene datos, el usuario existe.
-			if response:
-				return response
+			return response
 			
-			return None
+		except httpx.HTTPStatusError as e:
+			#-- Capturar específicamente errores HTTP.
+			status_code = e.response.status_code
+			logger.warning(f"Error HTTP al consultar usuario {cuit}: {status_code}")
 			
-		except Exception as e:
-			status_code = getattr(e, "status_code", None)
-			logger.error(f"Fracasó la búsqueda, statuscode: {status_code}")
 			if status_code == 404:
+				#-- El usuario no existe, no es un error.
+				logger.info(f"Usuario con CUIT {cuit} no encontrado (404 esperado)")
 				return None
-			logger.error(f"Error al verificar usuario: {e}")
+			
+			#-- Otros errores HTTP (400, 500, etc.) se propagan.
+			logger.error(f"Error HTTP inesperado al consultar usuario {cuit}: {e}")
+			raise
+		
+		except Exception as e:
+			#-- Cualquier otro error inesperado.
+			logger.error(f"Error inesperado al verificar usuario {cuit}: {e}")
 			raise
 	
 	@classmethod
