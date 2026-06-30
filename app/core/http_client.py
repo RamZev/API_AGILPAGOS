@@ -3,7 +3,7 @@ import httpx
 import logging
 import time
 from typing import Optional, Dict, Any
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 from app.config import Config
 from app.core.security import generate_credentials
@@ -41,15 +41,35 @@ class AgilpagosClient:
 	
 	def _is_token_expired(self) -> bool:
 		"""Verifica si el token está por expirar (menos de 5 minutos de margen)"""
-		print("*-- viene a comprobar le expiración del token")
+		print("*-- viene a comprobar la expiración del token")
 		if not self._token_expiration:
 			return True
+		
 		margin = timedelta(minutes=5)
 		print(f"*-- margin: {margin}")
 		print(f"*-- type(margin): {type(margin)}")
-		dif = datetime.now() >= (self._token_expiration - margin)
-		print(f"*-- dif: {dif}")
-		return datetime.now() >= (self._token_expiration - margin)
+		
+		#-- CORRECCIÓN: Usar datetime.now(timezone.utc) para obtener un objeto "aware".
+		now_utc = datetime.now(timezone.utc)
+		
+		#-- Asegurarse de que _token_expiration sea "aware" (UTC).
+		exp = self._token_expiration
+		if exp.tzinfo is None:
+			#-- Si por alguna razón es naive, lo convertimos a UTC.
+			exp = exp.replace(tzinfo=timezone.utc)
+		else:
+			#-- Si ya es aware, lo convertimos a UTC por si acaso.
+			exp = exp.astimezone(timezone.utc)
+		
+		print(f"*-- now_utc: {now_utc}")
+		print(f"*-- exp: {exp}")
+		print(f"*-- exp - margin: {exp - margin}")
+		
+		#-- Comparación segura entre objetos "aware".
+		is_expired = now_utc >= (exp - margin)
+		print(f"*-- is_expired: {is_expired}")
+		
+		return is_expired
 	
 	async def _refresh_token(self):
 		"""Renueva el token usando refreshToken si está disponible, o login completo"""
@@ -123,13 +143,16 @@ class AgilpagosClient:
 			data = response.json()
 			self._token = data.get("token")
 			self._refresh_token_value = data.get("refreshToken")
-			self._token_expiration = data.get("expiration")
 			
 			exp_str = data.get("expiration")
 			if exp_str:
+				#-- Se crea un objeto "aware".
 				self._token_expiration = datetime.fromisoformat(
 					exp_str.replace("Z", "+00:00")
 				)
+			else:
+				#-- Si no hay expiración, establecer un valor por defecto (ej: 5 minutos).
+				self._token_expiration = datetime.now(timezone.utc) + timedelta(minutes=5)
 			
 			logger.info("✅ Token renovado exitosamente con login")
 			
