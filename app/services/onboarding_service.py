@@ -45,6 +45,7 @@ class OnboardingService:
 			
 			#-- Si la respuesta contiene datos, el usuario existe.
 			if response and "idUsuario" in response:
+				logger.info(f"Encontró es usuario con CUIT: {cuit}")
 				return response
 			return None
 			
