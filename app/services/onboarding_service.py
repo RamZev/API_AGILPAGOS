@@ -45,7 +45,7 @@ class OnboardingService:
 			)
 			print(f"El contenido de response: {response}")
 			#-- Si la respuesta contiene datos, el usuario existe.
-			if response and "idUsuario" in response:
+			if response:
 				logger.info(f"Encontró es usuario con CUIT: {cuit}")
 				return response
 			logger.info(f"NO se Encontró un usuario con CUIT: {cuit}")
