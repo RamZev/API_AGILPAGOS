@@ -208,7 +208,7 @@ class AgilpagosClient:
 				
 				if response.status_code == 204:
 					return {}
-				
+				logger.info(f"el contenido del response es: {response.json()}")
 				return response.json()
 				
 			except httpx.HTTPStatusError as e:
