@@ -8,7 +8,10 @@ import httpx
 from app.config import Config
 from app.core.http_client import agilpagos_client
 from app.models.onboarding_models import UsuarioAltaRequest
-from app.core.exceptions import AgilpagosValidationError
+from app.core.exceptions import (
+	AgilpagosValidationError,
+	UsuarioYaExisteError
+)
 
 
 logger = logging.getLogger(__name__)
@@ -75,23 +78,28 @@ class OnboardingService:
 			
 		Returns:
 			Respuesta de Agilpagos con los datos del usuario creado
+        
+		Raises:
+            UsuarioYaExisteError: Si el usuario ya tiene CVU creada
+            AgilpagosValidationError: Si Agilpagos devuelve un error de validación
 		"""
-		# 1. Verificar si el usuario ya existe
+		#-- 1. Verificar si el usuario ya existe.
 		usuario_existente = await cls.verificar_usuario_existe(request.cuit)
 		
 		if usuario_existente:
-			# El usuario ya existe, verificar si tiene CVU
-			cvus = usuario_existente.get("cvus", [])
+			#-- El usuario ya existe, verificar si tiene CVU.
+			cvus = usuario_existente.get("cuentas", [])
 			if cvus:
-				raise ValueError(f"El usuario con CUIT {request.cuit} ya tiene {len(cvus)} CVU(s) activas")
+				#-- Si ya tiene CVU, no se permite crear otra.
+				raise UsuarioYaExisteError(request.cuit, len(cvus))
 			
-			# Si no tiene CVU, solo se necesita crear una nueva CVU
+			#-- Si no tiene CVU, solo se necesita crear una nueva CVU.
 			logger.info(f"Usuario {request.cuit} existe sin CVU, se creará una nueva")
 		
-		# 2. Construir el payload para Agilpagos
+		#-- 2. Construir el payload para Agilpagos.
 		payload = cls._build_payload(request)
 		
-		# 3. Llamar a la API de Agilpagos
+		#-- 3. Llamar a la API de Agilpagos (crea usuario si no existe, o agrega CVU si existe).
 		try:
 			response = await agilpagos_client.request(
 				method="POST",

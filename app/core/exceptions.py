@@ -34,3 +34,12 @@ class TokenExpiredError(Exception):
 class TokenInvalidError(Exception):
 	"""Token interno inválido"""
 	pass
+
+
+class UsuarioYaExisteError(Exception):
+	"""El usuario ya existe con CVU activas"""
+	def __init__(self, cuit: str, cantidad_cvus: int):
+		self.cuit = cuit
+		self.cantidad_cvus = cantidad_cvus
+		self.message = f"El usuario con CUIT {cuit} ya tiene {cantidad_cvus} CVU(s) activas"
+		super().__init__(self.message)

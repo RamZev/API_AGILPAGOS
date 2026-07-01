@@ -5,6 +5,10 @@ from app.models.onboarding_models import (
 	UsuarioAltaRequest,
 	UsuarioAltaResponse,
 )
+from app.core.exceptions import (
+	AgilpagosValidationError,
+	UsuarioYaExisteError
+)
 from app.services.onboarding_service import OnboardingService
 from app.services.maestros_service import MaestrosService
 
@@ -26,25 +30,10 @@ async def crear_usuario(
 	- Retorna los datos de la cuenta creada
 	"""
 	try:
-		# 1. Validar datos (ya lo hace Pydantic)
-		
-		# 2. Verificar si el usuario ya existe
-		usuario_existente = await OnboardingService.verificar_usuario_existe(
-			request.cuit
-		)
-		
-		if usuario_existente:
-			cvus = usuario_existente.get("cvus", [])
-			if cvus:
-				raise HTTPException(
-					status_code=status.HTTP_409_CONFLICT,
-					detail=f"El usuario con CUIT {request.cuit} ya tiene {len(cvus)} CVU(s) activas"
-				)
-		
-		# 3. Crear usuario en Agilpagos
+		#-- Solicitar la creación del usuario en Agilpagos.
 		response = await OnboardingService.crear_usuario(request)
 		
-		# 4. Construir respuesta
+		#-- Construir respuesta.
 		return UsuarioAltaResponse(
 			id_usuario=response.get("idUsuario", ""),
 			cvu=response.get("cvu", ""),
@@ -53,10 +42,15 @@ async def crear_usuario(
 			numero_cuenta_entidad=request.numeroCuentaEntidad
 		)
 		
-	except ValueError as e:
+	except UsuarioYaExisteError as e:
+		raise HTTPException(
+			status_code=status.HTTP_409_CONFLICT,
+			detail=e.message
+		)
+	except AgilpagosValidationError as e:
 		raise HTTPException(
 			status_code=status.HTTP_400_BAD_REQUEST,
-			detail=str(e)
+			detail=e.message
 		)
 	except Exception as e:
 		raise HTTPException(
