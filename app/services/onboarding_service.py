@@ -84,9 +84,11 @@ class OnboardingService:
             AgilpagosValidationError: Si Agilpagos devuelve un error de validación
 		"""
 		#-- 1. Verificar si el usuario ya existe.
+		logger.info(f"*-- Verificar si existe usuario con cuit: {request.cuit}")
 		usuario_existente = await cls.verificar_usuario_existe(request.cuit)
 		
 		if usuario_existente:
+			logger.info(f"*-- Existe un usuario con cuit: {request.cuit}")
 			#-- El usuario ya existe, verificar si tiene CVU.
 			cvus = usuario_existente.get("cuentas", [])
 			if cvus:
@@ -95,6 +97,8 @@ class OnboardingService:
 			
 			#-- Si no tiene CVU, solo se necesita crear una nueva CVU.
 			logger.info(f"Usuario {request.cuit} existe sin CVU, se creará una nueva")
+		else:
+			logger.info(f"*-- No existe usuario con cuit: {request.cuit}, se procesde a crear un usuario y cvu.")
 		
 		#-- 2. Construir el payload para Agilpagos.
 		payload = cls._build_payload(request)
