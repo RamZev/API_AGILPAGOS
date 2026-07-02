@@ -4,7 +4,7 @@ from typing import List, Dict, Any, Optional
 from datetime import datetime
 
 from app.core.http_client import agilpagos_client
-from app.models.cuentas import CVUInfo, SaldoResponse, MovimientoResponse
+from app.models.cuentas_models import CVUInfo, SaldoResponse, MovimientoResponse
 
 logger = logging.getLogger(__name__)
 
@@ -18,10 +18,10 @@ class CuentasService:
 		Obtiene la lista de CVU de un usuario.
 		
 		Args:
-			id_usuario: GUID del usuario en Agilpagos
+			- id_usuario: GUID del usuario en Agilpagos
 			
 		Returns:
-			Lista de CVUInfo
+			- Lista de CVUInfo
 		"""
 		try:
 			#-- El endpoint /CVU requiere el header IDWEBUSUARIOFINAL.
@@ -48,10 +48,10 @@ class CuentasService:
 		Consulta el saldo de una CVU.
 		
 		Args:
-			id_cuenta: ID de la cuenta (GUID obtenido de /CVU)
+			- id_cuenta: ID de la cuenta (GUID obtenido de /CVU)
 			
 		Returns:
-			SaldoResponse con el saldo y fecha
+			- SaldoResponse con el saldo y fecha
 		"""
 		try:
 			response = await agilpagos_client.request(
@@ -79,15 +79,15 @@ class CuentasService:
 		Consulta los movimientos de una CVU con paginación.
 		
 		Args:
-			id_cuenta: ID de la cuenta (GUID)
-			id_usuario: GUID del usuario (para el header)
-			skip: Número de registros a saltar (paginación)
-			top: Cantidad de registros por página
-			from_date: Fecha de inicio (opcional)
-			to_date: Fecha de fin (opcional)
+			- id_cuenta: ID de la cuenta (GUID)
+			- id_usuario: GUID del usuario (para el header)
+			- skip: Número de registros a saltar (paginación)
+			- top: Cantidad de registros por página
+			- from_date: Fecha de inicio (opcional)
+			- to_date: Fecha de fin (opcional)
 			
 		Returns:
-			Diccionario con items, total, page, size, pages
+			- Diccionario con items, total, page, size, pages
 		"""
 		try:
 			# Construir parámetros de query

@@ -5,7 +5,7 @@ from datetime import datetime
 
 from app.services.cuentas_service import CuentasService
 from app.dependencies import get_current_user
-from app.models.cuentas import CVUInfo, SaldoResponse, MovimientosResponse
+from app.models.cuentas_models import CVUInfo, SaldoResponse, MovimientosResponse
 
 router = APIRouter(prefix="/cuentas", tags=["Cuentas"])
 
@@ -45,7 +45,7 @@ async def consultar_saldo(
 	Consulta el saldo de una CVU específica.
 	
 	Args:
-		id_cuenta: ID de la cuenta (GUID) obtenido de /cuentas/cvus
+		- id_cuenta: ID de la cuenta (GUID) obtenido de /cuentas/cvus
 	"""
 	try:
 		saldo = await CuentasService.consultar_saldo(id_cuenta)
