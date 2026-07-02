@@ -9,7 +9,7 @@ class UsuarioAltaRequest(BaseModel):
 	
 	nombre: str = Field(..., max_length=40)
 	apellido: str = Field(..., max_length=40)
-	genero: str = Field(..., pattern="^(M|F|X)$")
+	sexo: str = Field(..., pattern="^(M|F|X)$")
 	fechaNacimiento: date
 	idNacionalidad: str
 	idTipoDocumento: str
