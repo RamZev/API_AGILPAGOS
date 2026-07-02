@@ -33,7 +33,7 @@ async def lifespan(app: FastAPI):
 	#-- Inicio: Verificar conexión con Agilpagos.
 	logger.info("🚀 Iniciando API Gateway - Agilpagos")
 	logger.info(f"📡 Entorno: {Config.ENVIRONMENT}")
-	logger.info(f"🔗 Agilpagos URL: {Config.AGILPAGOS_BASE_URL}")
+	logger.info(f"🔗 Agilpagos URL: {Config.AMBIENTE_BASE_URL}")
 	
 	# #-- Intentar obtener token de Agilpagos para verificar conexión.
 	# try:

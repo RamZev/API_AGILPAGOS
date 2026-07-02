@@ -30,7 +30,7 @@ async def health_check():
 	health_status = {
 		"status": "healthy",
 		"environment": Config.ENVIRONMENT,
-		"agilpagos_url": Config.AGILPAGOS_BASE_URL,
+		"agilpagos_url": Config.AMBIENTE_BASE_URL,
 		"agilpagos_connected": False
 	}
 	
@@ -90,7 +90,7 @@ async def get_token_manual(request: GetTokenManualRequest):
 			payload["cuit"] = request.cuit
 		
 		#-- 2. Llamar a Agilpagos.
-		url = f"{Config.AGILPAGOS_BASE_URL}/Account/Login"
+		url = f"{Config.AMBIENTE_BASE_URL}/Account/Login"
 		
 		async with httpx.AsyncClient(timeout=30.0) as client:
 			response = await client.post(url, json=payload)

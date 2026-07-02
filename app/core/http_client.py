@@ -14,8 +14,14 @@ logger = logging.getLogger(__name__)
 class AgilpagosClient:
 	"""Cliente HTTP para consumir la API de Agilpagos."""
 	
+	#-- Defir los tipos de servicio para mapear a las URLs.
+	SERVICE_TYPES = {
+		"ambiente": Config.AMBIENTE_BASE_URL,      #-- Para autenticación (/Account/Login)
+		"onboarding": Config.ONBOARDING_BASE_URL,  #-- Para /Usuarios, /CVU, etc.
+		"informes": Config.INFORMES_BASE_URL,      #-- Para reportes y conciliaciones
+	}
+	
 	def __init__(self):
-		self.base_url = Config.AGILPAGOS_BASE_URL
 		self.id_entidad = Config.API_SG_ID_ENTIDAD
 		self.username = Config.API_SG_USERNAME
 		self.password = Config.API_SG_PASSWORD
@@ -25,12 +31,22 @@ class AgilpagosClient:
 		self._token_expiration: Optional[datetime] = None
 		self._refresh_token_value: Optional[str] = None
 		
+		#-- Cliente HTTP compartido (se puede usar para todas las URLs).
 		self._client = httpx.AsyncClient(
 			timeout=30.0,
 			limits=httpx.Limits(max_keepalive_connections=5, max_connections=10)
 		)
 		
 		logger.info(f"Cliente Agilpagos inicializado con URL: {self.base_url}")
+	
+	def _get_base_url(self, service_type: str) -> str:
+		"""
+		Devuelve la URL base correcta según el tipo de servicio.
+		"""
+		base_url = self.SERVICE_TYPES.get(service_type)
+		if not base_url:
+			raise ValueError(f"Tipo de servicio '{service_type}' no válido. Usa 'ambiente', 'onboarding' o 'informes'.")
+		return base_url
 	
 	async def _get_token(self) -> str|None:
 		"""Obtiene un token Bearer válido, renovándolo si es necesario"""
@@ -163,6 +179,7 @@ class AgilpagosClient:
 		self,
 		method: str,
 		endpoint: str,
+		service_type: str = "ambiente",
 		json: Optional[Dict[str, Any]] = None,
 		params: Optional[Dict[str, Any]] = None,
 		headers: Optional[Dict[str, str]] = None,
@@ -175,6 +192,7 @@ class AgilpagosClient:
 		Args:
 			method: Método HTTP (GET, POST, PUT, DELETE)
 			endpoint: Endpoint relativo (ej: "/Usuarios")
+			service_type: Tipo de servicio ("ambiente", "onboarding" o "informes")
 			json: Body de la solicitud
 			params: Parámetros de query string
 			headers: Headers adicionales
@@ -182,7 +200,10 @@ class AgilpagosClient:
 			requires_auth: Si es True, incluye el token Bearer. 
 						   Para endpoints públicos, usa False.
 		"""
-		url = f"{self.base_url}{endpoint}"
+		
+		#-- Construir la URL completa usando el tipo de servicio.
+		base_url = self._get_base_url(service_type)
+		url = f"{base_url}{endpoint}"
 		
 		#-- Headers base (sin token por defecto).
 		request_headers = {

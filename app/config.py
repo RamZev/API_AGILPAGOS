@@ -13,7 +13,9 @@ class Config:
 	ENVIRONMENT = os.getenv("ENVIRONMENT", "development")
 	
 	#-- URLs de Agilpagos.
-	AGILPAGOS_BASE_URL = os.getenv("AGILPAGOS_BASE_URL")
+	AMBIENTE_BASE_URL = os.getenv("AMBIENTE_BASE_URL")
+	ONBOARDING_BASE_URL = os.getenv("ONBOARDING_BASE_URL")
+	INFORMES_BASE_URL = os.getenv("INFORMES_BASE_URL")
 	
 	#-- Credenciales de Agilpagos.
 	API_SG_ID_ENTIDAD = os.getenv("API_SG_ID_ENTIDAD")
@@ -52,7 +54,9 @@ class Config:
 	def validate(cls):
 		"""Valida que las credenciales necesarias estén configuradas"""
 		required = [
-			"AGILPAGOS_BASE_URL",
+			"AMBIENTE_BASE_URL",
+			"ONBOARDING_BASE_URL",
+			"INFORMES_BASE_URL",
 			"MAASOFT_BASE_URL",
 			"API_SG_ID_ENTIDAD",
 			"API_SG_APP_ID",

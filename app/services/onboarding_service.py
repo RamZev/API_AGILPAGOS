@@ -109,6 +109,7 @@ class OnboardingService:
 			response = await agilpagos_client.request(
 				method="POST",
 				endpoint="/Usuarios",
+				service_type="onboarding",
 				json=payload
 			)
 			
@@ -128,7 +129,7 @@ class OnboardingService:
 		return {
 			"nombre": request.nombre,
 			"apellido": request.apellido,
-			"sexo": request.sexo,
+			"genero": request.genero,
 			"fechaNacimiento": request.fechaNacimiento.isoformat(),
 			"idNacionalidad": request.idNacionalidad,
 			"idTipoDocumento": cls.ID_TIPO_DOCUMENTO,
@@ -137,8 +138,8 @@ class OnboardingService:
 			"cuit": int(request.cuit),
 			"idEstadoCivil": request.idEstadoCivil,
 			"email": request.email,
-			"caracteristicaPaisTelefono": request.caracteristicaPaisTelefono,
-			"codigoAreaTelefono": request.codigoAreaTelefono,
+			"caracteristicaPais": request.caracteristicaPais,
+			"codigoArea": request.codigoArea,
 			"numeroTelefono": request.numeroTelefono,
 			"idCondicionFiscal": request.idCondicionFiscal,
 			"esPep": request.esPep,
