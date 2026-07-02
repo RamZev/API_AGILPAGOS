@@ -128,7 +128,7 @@ class OnboardingService:
 		return {
 			"nombre": request.nombre,
 			"apellido": request.apellido,
-			"sexo": request.genero,
+			"sexo": request.sexo,
 			"fechaNacimiento": request.fechaNacimiento.isoformat(),
 			"idNacionalidad": request.idNacionalidad,
 			"idTipoDocumento": cls.ID_TIPO_DOCUMENTO,
