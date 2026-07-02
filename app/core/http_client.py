@@ -37,7 +37,7 @@ class AgilpagosClient:
 			limits=httpx.Limits(max_keepalive_connections=5, max_connections=10)
 		)
 		
-		logger.info(f"Cliente Agilpagos inicializado con URL: {self.base_url}")
+		logger.info(f"Cliente Agilpagos inicializado")
 	
 	def _get_base_url(self, service_type: str) -> str:
 		"""
