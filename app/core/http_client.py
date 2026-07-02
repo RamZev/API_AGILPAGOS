@@ -102,13 +102,14 @@ class AgilpagosClient:
 		"""Renueva el token usando el endpoint /Account/RefreshToken"""
 		logger.info("🔄 Renovando token con refreshToken...")
 		
+		#-- Usar la URL de ambiente.
+		base_url = self._get_base_url("ambiente")
+		url = f"{base_url}/Account/RefreshToken"
+		
 		payload = {"refreshToken": self._refresh_token_value}
 		
 		try:
-			response = await self._client.post(
-				f"{self.base_url}/Account/RefreshToken",
-				json=payload
-			)
+			response = await self._client.post(url, json=payload)
 			response.raise_for_status()
 			
 			data = response.json()
@@ -148,11 +149,12 @@ class AgilpagosClient:
 			"cuit": creds["cuit"]
 		}
 		
+		#-- Usar la URL de ambiente.
+		base_url = self._get_base_url("ambiente")
+		url = f"{base_url}/Account/Login"
+		
 		try:
-			response = await self._client.post(
-				f"{self.base_url}/Account/Login",
-				json=payload
-			)
+			response = await self._client.post(url, json=payload)
 			response.raise_for_status()
 			
 			data = response.json()
