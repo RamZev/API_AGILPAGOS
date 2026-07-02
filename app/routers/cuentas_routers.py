@@ -45,7 +45,7 @@ async def consultar_saldo(
 	Consulta el saldo de una CVU específica.
 	
 	Args:
-		- id_cuenta: ID de la cuenta (GUID) obtenido de /cuentas/cvus
+	- id_cuenta: ID de la cuenta (GUID) obtenido de /cuentas/cvus
 	"""
 	try:
 		saldo = await CuentasService.consultar_saldo(id_cuenta)
@@ -71,11 +71,11 @@ async def consultar_movimientos(
 	Consulta los movimientos de una CVU con paginación.
 	
 	Args:
-		- id_cuenta: ID de la cuenta (GUID) obtenido de /cuentas/cvus
-		- skip: Número de registros a saltar (paginación)
-		- top: Cantidad de registros por página (máximo 100)
-		- from_date: Fecha de inicio (opcional)
-		- to_date: Fecha de fin (opcional)
+	- id_cuenta: ID de la cuenta (GUID) obtenido de /cuentas/cvus
+	- skip: Número de registros a saltar (paginación)
+	- top: Cantidad de registros por página (máximo 100)
+	- from_date: Fecha de inicio (opcional)
+	- to_date: Fecha de fin (opcional)
 	"""
 	try:
 		id_usuario = current_user.get("sub")
