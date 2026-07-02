@@ -18,8 +18,8 @@ class UsuarioAltaRequest(BaseModel):
 	cuit: str = Field(..., pattern="^[0-9]{11}$")
 	idEstadoCivil: str
 	email: str
-	caracteristicaPais: str
-	codigoArea: str
+	caracteristicaPaisTelefono: str
+	codigoAreaTelefono: str
 	numeroTelefono: str
 	idCondicionFiscal: str
 	esPep: bool = False
