@@ -27,6 +27,7 @@ class OnboardingService:
 	# ID_TIPO_CUENTA = "D2483A34-78BE-40A2-B8CB-07AD4BCF6F61"
 	ID_TIPO_DOCUMENTO = Config.API_SG_ID_TIPO_DOCUMENTO
 	ID_PAIS_ARGENTINA = Config.API_SG_ID_PAIS_DOMICILIO
+	API_SG_ID_ENTIDAD_TIPO_DOCUMENTO = Config.API_SG_ID_ENTIDAD_TIPO_DOCUMENTO
 	ID_TIPO_PERSONA = Config.API_SG_ID_TIPO_PERSONA
 	ID_TIPO_CUENTA = Config.API_SG_ID_TIPO_CUENTA
 	
@@ -157,7 +158,7 @@ class OnboardingService:
 			"fechaAlta": request.fechaNacimiento.isoformat(),
 			"idOcupacion": request.idOcupacion,
 			"numeroCuentaEntidad": request.numeroCuentaEntidad,
-			"idEntidadTipoDocumento": cls.ID_TIPO_DOCUMENTO,
+			"idEntidadTipoDocumento": cls.API_SG_ID_ENTIDAD_TIPO_DOCUMENTO,
 			"idTipoPersona": cls.ID_TIPO_PERSONA,
 			"idTipoCuenta": cls.ID_TIPO_CUENTA
 		}
