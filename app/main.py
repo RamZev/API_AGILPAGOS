@@ -7,11 +7,11 @@ import logging
 from app.config import Config
 from app.routers import (
 	auth_routers,
+	cuentas_routers,
 	maestros_router,
 	onboarding_routers,
 	test_routers,
-	maasoft_routers,
-	cuentas
+	maasoft_routers
 )
 
 
@@ -75,7 +75,7 @@ app.include_router(auth_routers.router)
 app.include_router(maestros_router.router)
 app.include_router(onboarding_routers.router)
 app.include_router(test_routers.router)
-app.include_router(cuentas.router)
+app.include_router(cuentas_routers.router)
 
 if not Config.is_production():
 	app.include_router(maasoft_routers.router)

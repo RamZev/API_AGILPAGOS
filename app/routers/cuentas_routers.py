@@ -39,7 +39,7 @@ async def listar_cvus(id_usuario: str):
 @router.get("/saldo/{id_cuenta}", response_model=SaldoResponse)
 async def consultar_saldo(
 	id_cuenta: str,
-	current_user: dict = Depends(get_current_user)
+	# current_user: dict = Depends(get_current_user)
 ):
 	"""
 	Consulta el saldo de una CVU específica.
