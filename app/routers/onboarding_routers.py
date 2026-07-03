@@ -67,7 +67,7 @@ async def crear_usuario(
 		)
 
 
-@router.get("/usuario/{cuit}", repsponse_model=UsuarioAltaResponse)
+@router.get("/usuario/{cuit}", response_model=UsuarioAltaResponse)
 async def consultar_usuario(cuit: str):
 	"""
 	Consulta un usuario por su CUIT.
