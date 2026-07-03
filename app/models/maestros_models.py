@@ -1,7 +1,8 @@
 
 # app\models\maestros.py
-from pydantic import BaseModel
-from typing import List, Optional
+from pydantic import BaseModel, Field
+from typing import Optional
+
 
 
 class Provincia(BaseModel):
@@ -38,10 +39,14 @@ class MotivoPEP(BaseModel):
 	descripcion: str
 
 
+class ErrorMaestro(BaseModel):
+    error: str = Field(..., description="Mensaje de error si falló la carga de este dato maestro")
+
+
 class DatosMaestrosResponse(BaseModel):
-	nacionalidades: List[Nacionalidad]
-	provincias: List[Provincia]
-	estados_civiles: List[EstadoCivil]
-	condiciones_fiscales: List[CondicionFiscal]
-	ocupaciones: List[Ocupacion]
-	motivos_pep: List[MotivoPEP]
+	nacionalidades: list[Nacionalidad] | ErrorMaestro
+	provincias: list[Provincia] | ErrorMaestro
+	estados_civiles: list[EstadoCivil] | ErrorMaestro
+	condiciones_fiscales: list[CondicionFiscal] | ErrorMaestro
+	ocupaciones: list[Ocupacion] | ErrorMaestro
+	motivos_pep: list[MotivoPEP] | ErrorMaestro

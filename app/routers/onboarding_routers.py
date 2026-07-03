@@ -2,6 +2,7 @@
 from fastapi import APIRouter, HTTPException, status
 
 from app.models.maestros_models import (
+	DatosMaestrosResponse,
 	Provincia,
 	Nacionalidad,
 	EstadoCivil,
@@ -93,7 +94,7 @@ async def consultar_usuario(cuit: str):
 		)
 
 
-@router.get("/datos-maestros", response_model=[Provincia, Nacionalidad, EstadoCivil, CondicionFiscal, Ocupacion, MotivoPEP])
+@router.get("/datos-maestros", response_model=DatosMaestrosResponse)
 async def get_datos_maestros():
 	"""
 	Obtiene los datos maestros necesarios para el onboarding.
