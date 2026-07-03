@@ -17,8 +17,7 @@ from app.models.maestros_models import (
 router = APIRouter(prefix="/maestros", tags=["Datos Maestros"])
 
 
-# @router.get("/nacionalidades", response_model=Nacionalidad)
-@router.get("/nacionalidades")
+@router.get("/nacionalidades", response_model=list[Nacionalidad])
 async def get_nacionalidades():
 	"""
 	Obtiene el listado de Nacionalidades disponibles.
@@ -32,7 +31,7 @@ async def get_nacionalidades():
 		)
 
 
-@router.get("/provincias", response_model=Provincia)
+@router.get("/provincias", response_model=list[Provincia])
 async def get_provincias():
 	"""
 	Obtiene el listado de Provincias Argentinas.
@@ -44,9 +43,9 @@ async def get_provincias():
 			status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
 			detail=f"Error al obtener provincias: {str(e)}"
 		)
+	
 
-
-@router.get("/estados-civiles", response_model=EstadoCivil)
+@router.get("/estados-civiles", response_model=list[EstadoCivil])
 async def get_estados_civiles():
 	"""
 	Obtiene el listado de Estados Civiles.
@@ -60,7 +59,7 @@ async def get_estados_civiles():
 		)
 
 
-@router.get("/condiciones-fiscales", response_model=CondicionFiscal)
+@router.get("/condiciones-fiscales", response_model=list[CondicionFiscal])
 async def get_condiciones_fiscales():
 	"""
 	Obtiene el listado de Condiciones Fiscales.
@@ -74,7 +73,7 @@ async def get_condiciones_fiscales():
 		)
 
 
-@router.get("/ocupaciones", response_model=Ocupacion)
+@router.get("/ocupaciones", response_model=list[Ocupacion])
 async def get_ocupaciones():
 	"""
 	Obtiene el listado de Ocupaciones.
@@ -88,7 +87,7 @@ async def get_ocupaciones():
 		)
 
 
-@router.get("/motivos-pep", response_model=MotivoPEP)
+@router.get("/motivos-pep", response_model=list[MotivoPEP])
 async def get_motivos_pep():
 	"""
 	Obtiene el listado de Motivos para Personas Expuestas Políticamente (PEP).
