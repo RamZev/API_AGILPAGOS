@@ -3,16 +3,24 @@ from fastapi import APIRouter, HTTPException, status
 
 from app.services.maestros_service import MaestrosService
 from app.dependencies import get_current_user
-from app.models.maestros_models import DatosMaestrosResponse
+from app.models.maestros_models import (
+	DatosMaestrosResponse,
+	Nacionalidad,
+	Provincia,
+	EstadoCivil,
+	CondicionFiscal,
+	Ocupacion,
+	MotivoPEP
+)
 
 
 router = APIRouter(prefix="/maestros", tags=["Datos Maestros"])
 
 
-@router.get("/nacionalidades")
+@router.get("/nacionalidades", response_model=Nacionalidad)
 async def get_nacionalidades():
 	"""
-	Obtiene el listado de nacionalidades disponibles.
+	Obtiene el listado de Nacionalidades disponibles.
 	"""
 	try:
 		return await MaestrosService.get_nacionalidades()
@@ -23,10 +31,10 @@ async def get_nacionalidades():
 		)
 
 
-@router.get("/provincias")
+@router.get("/provincias", response_model=Provincia)
 async def get_provincias():
 	"""
-	Obtiene el listado de provincias argentinas.
+	Obtiene el listado de Provincias Argentinas.
 	"""
 	try:
 		return await MaestrosService.get_provincias()
@@ -37,10 +45,10 @@ async def get_provincias():
 		)
 
 
-@router.get("/estados-civiles")
+@router.get("/estados-civiles", response_model=EstadoCivil)
 async def get_estados_civiles():
 	"""
-	Obtiene el listado de estados civiles.
+	Obtiene el listado de Estados Civiles.
 	"""
 	try:
 		return await MaestrosService.get_estados_civiles()
@@ -51,10 +59,10 @@ async def get_estados_civiles():
 		)
 
 
-@router.get("/condiciones-fiscales")
+@router.get("/condiciones-fiscales", response_model=CondicionFiscal)
 async def get_condiciones_fiscales():
 	"""
-	Obtiene el listado de condiciones fiscales.
+	Obtiene el listado de Condiciones Fiscales.
 	"""
 	try:
 		return await MaestrosService.get_condiciones_fiscales()
@@ -65,10 +73,10 @@ async def get_condiciones_fiscales():
 		)
 
 
-@router.get("/ocupaciones")
+@router.get("/ocupaciones", response_model=Ocupacion)
 async def get_ocupaciones():
 	"""
-	Obtiene el listado de ocupaciones.
+	Obtiene el listado de Ocupaciones.
 	"""
 	try:
 		return await MaestrosService.get_ocupaciones()
@@ -79,10 +87,10 @@ async def get_ocupaciones():
 		)
 
 
-@router.get("/motivos-pep")
+@router.get("/motivos-pep", response_model=MotivoPEP)
 async def get_motivos_pep():
 	"""
-	Obtiene el listado de motivos para Personas Expuestas Políticamente.
+	Obtiene el listado de Motivos para Personas Expuestas Políticamente (PEP).
 	"""
 	try:
 		return await MaestrosService.get_motivos_pep()
@@ -97,7 +105,7 @@ async def get_motivos_pep():
 async def get_todos_los_datos_maestros():
 	"""
 	Obtiene todos los datos maestros en una sola llamada.
-	Útil para cargar formularios completos de onboarding.
+	Útil para cargar formularios completos de OnBoarding.
 	"""
 	try:
 		datos = await MaestrosService.get_all()
