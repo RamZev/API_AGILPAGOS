@@ -18,10 +18,10 @@ class CuentasService:
 		Obtiene la lista de CVU de un usuario.
 		
 		Args:
-			- id_usuario: GUID del usuario en Agilpagos
+		- id_usuario: GUID del usuario en Agilpagos
 			
 		Returns:
-			- Lista de CVUInfo
+		- Lista de CVUInfo
 		"""
 		try:
 			#-- El endpoint /CVU requiere el header IDWEBUSUARIOFINAL.
@@ -48,10 +48,10 @@ class CuentasService:
 		Consulta el saldo de una CVU.
 		
 		Args:
-			- id_cuenta: ID de la cuenta (GUID obtenido de /CVU)
+		- id_cuenta: ID de la cuenta (GUID obtenido de /CVU)
 			
 		Returns:
-			- SaldoResponse con el saldo y fecha
+		- SaldoResponse con el saldo y fecha
 		"""
 		try:
 			response = await agilpagos_client.request(
@@ -76,21 +76,21 @@ class CuentasService:
 		to_date: Optional[datetime] = None
 	) -> Dict[str, Any]:
 		"""
-		Consulta los movimientos de una CVU con paginación.
+		Consulta los movimientos de una CVU con paginación, ordenados del más reciente al más antiguo.
 		
 		Args:
-			- id_cuenta: ID de la cuenta (GUID)
-			- id_usuario: GUID del usuario (para el header)
-			- skip: Número de registros a saltar (paginación)
-			- top: Cantidad de registros por página
-			- from_date: Fecha de inicio (opcional)
-			- to_date: Fecha de fin (opcional)
+		- id_cuenta: ID de la cuenta (GUID)
+		- id_usuario: GUID del usuario (para el header)
+		- skip: Número de registros a saltar (paginación)
+		- top: Cantidad de registros por página
+		- from_date: Fecha de inicio (opcional)
+		- to_date: Fecha de fin (opcional)
 			
 		Returns:
 			- Diccionario con items, total, page, size, pages
 		"""
 		try:
-			# Construir parámetros de query
+			#-- Construir parámetros de query.
 			params = {
 				"idUsuarioLineaCuenta": id_cuenta,
 				"$skip": skip,
@@ -102,7 +102,7 @@ class CuentasService:
 			if to_date:
 				params["$to"] = to_date.isoformat()
 			
-			# Header obligatorio
+			#-- Header obligatorio.
 			headers = {"IDWEBUSUARIOFINAL": id_usuario}
 			
 			response = await agilpagos_client.request(
@@ -112,20 +112,20 @@ class CuentasService:
 				headers=headers
 			)
 			
-			# La respuesta es una lista de movimientos
+			#-- La respuesta es una lista de movimientos.
 			if isinstance(response, list):
 				items = [MovimientoResponse(**item) for item in response]
 			else:
 				items = []
 			
-			# Obtener información de paginación desde el header (si está disponible)
-			# Nota: La paginación se maneja con los parámetros skip y top
+			#-- Obtener información de paginación desde el header (si está disponible).
+			#-- Nota: La paginación se maneja con los parámetros skip y top.
 			return {
 				"items": items,
-				"total": len(items),  # En producción, esto vendría del header X-Pagination
+				"total": len(items),  #-- En producción, esto vendría del header X-Pagination.
 				"page": (skip // top) + 1 if top > 0 else 1,
 				"size": top,
-				"pages": 1  # Se calcula a partir del total
+				"pages": 1  #-- Se calcula a partir del total.
 			}
 			
 		except Exception as e:

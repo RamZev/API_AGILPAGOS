@@ -37,10 +37,10 @@ class OnboardingService:
 		Verifica si un usuario ya existe en Agilpagos por su CUIT.
 		
 		Args:
-			cuit: CUIT del usuario
+		- cuit: CUIT del usuario
 			
 		Returns:
-			Datos del usuario si existe
+		- Datos del usuario si existe
 		"""
 		try:
 			response = await agilpagos_client.request(
@@ -75,14 +75,14 @@ class OnboardingService:
 		Crea un usuario y su CVU en Agilpagos.
 		
 		Args:
-			request: Datos del usuario
+		- request: Datos del usuario
 			
 		Returns:
-			Respuesta de Agilpagos con los datos del usuario creado
-        
+		- Respuesta de Agilpagos con los datos del usuario creado
+		
 		Raises:
-            UsuarioYaExisteError: Si el usuario ya tiene CVU creada
-            AgilpagosValidationError: Si Agilpagos devuelve un error de validación
+		- UsuarioYaExisteError: Si el usuario ya tiene CVU creada
+		- AgilpagosValidationError: Si Agilpagos devuelve un error de validación
 		"""
 		#-- 1. Verificar si el usuario ya existe.
 		logger.info(f"*-- Verificar si existe usuario con cuit: {request.cuit}")

@@ -65,7 +65,8 @@ async def consultar_movimientos(
 	top: int = Query(10, ge=1, le=100, description="Registros por página"),
 	from_date: Optional[datetime] = Query(None, description="Fecha de inicio (ISO)"),
 	to_date: Optional[datetime] = Query(None, description="Fecha de fin (ISO)"),
-	current_user: dict = Depends(get_current_user)
+	id_usuario: str = Query(..., description="GUID del usuario (para el header)"),
+	# current_user: dict = Depends(get_current_user)
 ):
 	"""
 	Consulta los movimientos de una CVU con paginación.
@@ -78,12 +79,12 @@ async def consultar_movimientos(
 	- to_date: Fecha de fin (opcional)
 	"""
 	try:
-		id_usuario = current_user.get("sub")
-		if not id_usuario:
-			raise HTTPException(
-				status_code=status.HTTP_400_BAD_REQUEST,
-				detail="ID de usuario no encontrado en el token"
-			)
+		# id_usuario = current_user.get("sub")
+		# if not id_usuario:
+		# 	raise HTTPException(
+		# 		status_code=status.HTTP_400_BAD_REQUEST,
+		# 		detail="ID de usuario no encontrado en el token"
+		# 	)
 		
 		movimientos = await CuentasService.consultar_movimientos(
 			id_cuenta=id_cuenta,

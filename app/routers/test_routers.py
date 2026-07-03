@@ -15,6 +15,7 @@ router = APIRouter(prefix="/test", tags=["Test"])
 
 @router.get("/")
 async def root():
+	"""Endpoint raíz para verificar que la API está corriendo."""
 	return {
 		"message": "API Gateway - Agilpagos",
 		"version": "1.0.0",
@@ -26,7 +27,7 @@ async def root():
 
 @router.get("/health")
 async def health_check():
-	"""Endpoint de verificación de salud"""
+	"""Endpoint de verificación de salud de la API."""
 	health_status = {
 		"status": "healthy",
 		"environment": Config.ENVIRONMENT,

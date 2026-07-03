@@ -1,6 +1,14 @@
 # app\routers\onboarding_routers.py
 from fastapi import APIRouter, HTTPException, status
 
+from app.models.maestros_models import (
+	Provincia,
+	Nacionalidad,
+	EstadoCivil,
+	CondicionFiscal,
+	Ocupacion,
+	MotivoPEP
+)
 from app.models.onboarding_models import (
 	UsuarioAltaRequest,
 	UsuarioAltaResponse,
@@ -59,7 +67,7 @@ async def crear_usuario(
 		)
 
 
-@router.get("/usuario/{cuit}")
+@router.get("/usuario/{cuit}", repsponse_model=UsuarioAltaResponse)
 async def consultar_usuario(cuit: str):
 	"""
 	Consulta un usuario por su CUIT.
@@ -85,12 +93,18 @@ async def consultar_usuario(cuit: str):
 		)
 
 
-@router.get("/datos-maestros")
+@router.get("/datos-maestros", response_model=[Provincia, Nacionalidad, EstadoCivil, CondicionFiscal, Ocupacion, MotivoPEP])
 async def get_datos_maestros():
 	"""
 	Obtiene los datos maestros necesarios para el onboarding.
-	Retorna: nacionalidades, provincias, estados civiles, condiciones fiscales,
-	ocupaciones y motivos PEP.
+	
+	Retorna:
+	- Nacionalidades
+	- Provincias
+	- Estados Civiles
+	- Condiciones Fiscales
+	- Ocupaciones
+	- Motivos PEP.
 	"""
 	try:
 		return await MaestrosService.get_all()
