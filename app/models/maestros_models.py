@@ -16,12 +16,12 @@ class Provincia(BaseModel):
 
 class Nacionalidad(BaseModel):
 	idWeb: str
-	description: str
+	descripcion: str
 
 
 class EstadoCivil(BaseModel):
 	id: str
-	description: str
+	descripcion: str
 
 
 class CondicionFiscal(BaseModel):

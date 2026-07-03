@@ -17,7 +17,7 @@ from app.models.maestros_models import (
 router = APIRouter(prefix="/maestros", tags=["Datos Maestros"])
 
 
-@router.get("/nacionalidades", response_model=list[Nacionalidad])
+@router.get("/nacionalidades", response_model=Nacionalidad)
 async def get_nacionalidades():
 	"""
 	Obtiene el listado de Nacionalidades disponibles.
