@@ -1,6 +1,6 @@
 # app\models\onboarding.py
 from pydantic import BaseModel, Field, field_validator
-from typing import Optional
+from typing import Optional, List
 from datetime import date
 import re
 
@@ -72,14 +72,37 @@ class UsuarioAltaResponse(BaseModel):
 	numero_cuenta_entidad: str
 
 
-class UsuarioConsultaResponse(BaseModel):
-	"""Respuesta de consulta de usuario por CUIT"""
-	id_usuario: str
+class Titular(BaseModel):
+	"""Titular de una cuenta"""
+	tipoPersona: str
 	cuit: str
 	nombre: str
-	apellido: str
-	email: str
-	cvus: list
+
+
+class CuentaInfo(BaseModel):
+	"""Información de una cuenta (CVU)"""
+	cvu: str
+	alias: str
+	estado: str
+	nroCuentaEntidad: str
+	favorita: bool
+	titulares: List[Titular]
+
+
+class UsuarioConsultaResponse(BaseModel):
+	"""Respuesta de consulta de usuario por CUIT"""
+	usuario: List[str]  # Lista de IDs de usuario (Agilpagos permite múltiples)
+	cuentas: List[CuentaInfo]  # Lista de cuentas del usuario
+
+
+# class UsuarioConsultaResponse(BaseModel):
+# 	"""Respuesta de consulta de usuario por CUIT"""
+# 	id_usuario: str
+# 	cuit: str
+# 	nombre: str
+# 	apellido: str
+# 	email: str
+# 	cvus: list
 
 
 class ErrorResponse(BaseModel):

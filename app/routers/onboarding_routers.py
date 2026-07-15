@@ -5,6 +5,7 @@ from app.models.maestros_models import DatosMaestrosResponse
 from app.models.onboarding_models import (
 	UsuarioAltaRequest,
 	UsuarioAltaResponse,
+	UsuarioConsultaResponse
 )
 from app.core.exceptions import (
 	AgilpagosValidationError,
@@ -60,7 +61,7 @@ async def crear_usuario(
 		)
 
 
-@router.get("/usuario/{cuit}", response_model=UsuarioAltaResponse)
+@router.get("/usuario/{cuit}", response_model=UsuarioConsultaResponse)
 async def consultar_usuario(cuit: str):
 	"""
 	Consulta un usuario por su CUIT.
@@ -76,9 +77,7 @@ async def consultar_usuario(cuit: str):
 			)
 		
 		return usuario
-		
-	except HTTPException:
-		raise
+	
 	except Exception as e:
 		raise HTTPException(
 			status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
