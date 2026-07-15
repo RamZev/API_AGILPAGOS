@@ -1,15 +1,7 @@
 # app\routers\onboarding_routers.py
 from fastapi import APIRouter, HTTPException, status
 
-from app.models.maestros_models import (
-	DatosMaestrosResponse,
-	Provincia,
-	Nacionalidad,
-	EstadoCivil,
-	CondicionFiscal,
-	Ocupacion,
-	MotivoPEP
-)
+from app.models.maestros_models import DatosMaestrosResponse
 from app.models.onboarding_models import (
 	UsuarioAltaRequest,
 	UsuarioAltaResponse,

@@ -50,6 +50,9 @@ class Config:
 		os.getenv("JWT_ACCESS_TOKEN_EXPIRE_MINUTES", 30)
 	)
 	
+	#-- Otros parámetros.
+	MIN_HORAS_CAMBIO_ALIAS = int(os.getenv("MIN_HORAS_CAMBIO_ALIAS", 24))
+	
 	@classmethod
 	def validate(cls):
 		"""Valida que las credenciales necesarias estén configuradas"""
@@ -69,6 +72,7 @@ class Config:
 			"API_SG_ID_TIPO_PERSONA",
 			"API_SG_ID_TIPO_CUENTA",
 			"JWT_SECRET_KEY",
+			"MIN_HORAS_CAMBIO_ALIAS",
 		]
 		missing = [field for field in required if not getattr(cls, field)]
 		if missing:

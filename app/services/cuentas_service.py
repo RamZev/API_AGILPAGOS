@@ -4,7 +4,7 @@ from typing import List, Dict, Any, Optional
 from datetime import datetime
 
 from app.core.http_client import agilpagos_client
-from app.models.cuentas_models import CVUInfo, SaldoResponse, MovimientoResponse
+from app.models.cuentas_models import CVUInfo, SaldoResponse, MovimientoParams, MovimientoResponse
 
 logger = logging.getLogger(__name__)
 
@@ -24,7 +24,7 @@ class CuentasService:
 		- Lista de CVUInfo
 		"""
 		try:
-			#-- El endpoint /CVU requiere el header IDWEBUSUARIOFINAL.
+			#-- El endpoint /CVU requiere el header IDWEBUSUARIOFINAL y su valor es el id del alta de usuario en Agilpagos.
 			headers = {"IDWEBUSUARIOFINAL": id_usuario}
 			
 			response = await agilpagos_client.request(
@@ -43,20 +43,26 @@ class CuentasService:
 			raise
 	
 	@classmethod
-	async def consultar_saldo(cls, id_cuenta: str) -> SaldoResponse:
+	async def consultar_saldo(cls, id_cuenta: str, id_usuario: str) -> SaldoResponse:
 		"""
 		Consulta el saldo de una CVU.
 		
 		Args:
 		- id_cuenta: ID de la cuenta (GUID obtenido de /CVU)
-			
+		- id_usuario: GUID del usuario (para el header)
+		
 		Returns:
 		- SaldoResponse con el saldo y fecha
 		"""
+		
+		#-- El endpoint /CVU requiere el header IDWEBUSUARIOFINAL y su valor es el id del alta de usuario en Agilpagos.
+		headers = {"IDWEBUSUARIOFINAL": id_usuario}
+		
 		try:
 			response = await agilpagos_client.request(
 				method="GET",
-				endpoint=f"/Saldos/{id_cuenta}"
+				endpoint=f"/Saldos/{id_cuenta}",
+				headers=headers
 			)
 			
 			return SaldoResponse(**response)
@@ -69,41 +75,38 @@ class CuentasService:
 	async def consultar_movimientos(
 		cls,
 		id_cuenta: str,
-		id_usuario: str,
-		skip: int = 0,
-		top: int = 10,
-		from_date: Optional[datetime] = None,
-		to_date: Optional[datetime] = None
+		parametros: MovimientoParams
 	) -> Dict[str, Any]:
 		"""
 		Consulta los movimientos de una CVU con paginación, ordenados del más reciente al más antiguo.
 		
 		Args:
 		- id_cuenta: ID de la cuenta (GUID)
-		- id_usuario: GUID del usuario (para el header)
-		- skip: Número de registros a saltar (paginación)
-		- top: Cantidad de registros por página
-		- from_date: Fecha de inicio (opcional)
-		- to_date: Fecha de fin (opcional)
-			
+		- parametros: Parámetros de consulta (para el header y paginación):
+			· id_cuenta
+			· skip
+			· top
+			· from_date
+			· to_date
+		
 		Returns:
-			- Diccionario con items, total, page, size, pages
+		- Diccionario con items, total, page, size, pages
 		"""
 		try:
 			#-- Construir parámetros de query.
 			params = {
 				"idUsuarioLineaCuenta": id_cuenta,
-				"$skip": skip,
-				"$top": top
+				"$skip": parametros.skip,
+				"$top": parametros.top
 			}
 			
-			if from_date:
-				params["$from"] = from_date.isoformat()
-			if to_date:
-				params["$to"] = to_date.isoformat()
+			if parametros.from_date:
+				params["$from"] = parametros.from_date.isoformat()
+			if parametros.to_date:
+				params["$to"] = parametros.to_date.isoformat()
 			
 			#-- Header obligatorio.
-			headers = {"IDWEBUSUARIOFINAL": id_usuario}
+			headers = {"IDWEBUSUARIOFINAL": parametros.id_usuario}
 			
 			response = await agilpagos_client.request(
 				method="GET",
@@ -123,8 +126,8 @@ class CuentasService:
 			return {
 				"items": items,
 				"total": len(items),  #-- En producción, esto vendría del header X-Pagination.
-				"page": (skip // top) + 1 if top > 0 else 1,
-				"size": top,
+				"page": (parametros.skip // parametros.top) + 1 if parametros.top > 0 else 1,
+				"size": parametros.top,
 				"pages": 1  #-- Se calcula a partir del total.
 			}
 			

@@ -1,5 +1,5 @@
 # app/models/cuentas.py
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from typing import Optional, List
 from datetime import datetime
 
@@ -20,6 +20,15 @@ class SaldoResponse(BaseModel):
 	moneda: str
 	linea: str
 	idCuenta: str
+
+
+class MovimientoParams(BaseModel):
+	"""Parámetros para consultar movimientos"""
+	id_usuario: str
+	skip: int = Field(0, ge=0)
+	top: int = Field(10, ge=1, le=100)
+	from_date: Optional[datetime] = None
+	to_date: Optional[datetime] = None
 
 
 class MovimientoResponse(BaseModel):

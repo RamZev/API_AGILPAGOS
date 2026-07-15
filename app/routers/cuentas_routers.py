@@ -1,11 +1,10 @@
 # app/routers/cuentas.py
-from fastapi import APIRouter, Depends, HTTPException, status, Query
-from typing import Optional, List
-from datetime import datetime
+from fastapi import APIRouter, HTTPException, status, Query, Path, Depends
+from typing import Annotated, List
 
 from app.services.cuentas_service import CuentasService
 from app.dependencies import get_current_user
-from app.models.cuentas_models import CVUInfo, SaldoResponse, MovimientosResponse
+from app.models.cuentas_models import CVUInfo, SaldoResponse, MovimientoParams, MovimientosResponse
 
 router = APIRouter(prefix="/cuentas", tags=["Cuentas"])
 
@@ -60,12 +59,8 @@ async def consultar_saldo(
 
 @router.get("/movimientos/{id_cuenta}", response_model=MovimientosResponse)
 async def consultar_movimientos(
-	id_cuenta: str,
-	skip: int = Query(0, ge=0, description="Número de registros a saltar"),
-	top: int = Query(10, ge=1, le=100, description="Registros por página"),
-	from_date: Optional[datetime] = Query(None, description="Fecha de inicio (ISO)"),
-	to_date: Optional[datetime] = Query(None, description="Fecha de fin (ISO)"),
-	id_usuario: str = Query(..., description="GUID del usuario (para el header)"),
+	id_cuenta: Annotated[str, Path()],
+	params: Annotated[MovimientoParams, Query()]
 	# current_user: dict = Depends(get_current_user)
 ):
 	"""
@@ -88,11 +83,7 @@ async def consultar_movimientos(
 		
 		movimientos = await CuentasService.consultar_movimientos(
 			id_cuenta=id_cuenta,
-			id_usuario=id_usuario,
-			skip=skip,
-			top=top,
-			from_date=from_date,
-			to_date=to_date
+			parametros=params
 		)
 		
 		return movimientos
