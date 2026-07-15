@@ -92,3 +92,13 @@ def main():
 
 if __name__ == "__main__":
 	main()
+
+''' Modos de ejecución de la API
+
+Modo directo (uvicorn):
+	uv run uvicorn app.main:app --host 0.0.0.0 --port 8081
+
+Usando el método main() y su configuración:
+	uv run python -m app.main
+
+'''
