@@ -64,7 +64,7 @@ class UsuarioAltaRequest(BaseModel):
 
 
 class UsuarioAltaResponse(BaseModel):
-	"""Respuesta del alta de usuario (lo que devuelve API Intermedia)"""
+	"""Respuesta del alta de usuario"""
 	id_usuario: str
 	cvu: str
 	alias: str
@@ -91,18 +91,8 @@ class CuentaInfo(BaseModel):
 
 class UsuarioConsultaResponse(BaseModel):
 	"""Respuesta de consulta de usuario por CUIT"""
-	usuario: List[str]  # Lista de IDs de usuario (Agilpagos permite múltiples)
-	cuentas: List[CuentaInfo]  # Lista de cuentas del usuario
-
-
-# class UsuarioConsultaResponse(BaseModel):
-# 	"""Respuesta de consulta de usuario por CUIT"""
-# 	id_usuario: str
-# 	cuit: str
-# 	nombre: str
-# 	apellido: str
-# 	email: str
-# 	cvus: list
+	usuario: List[str]
+	cuentas: List[CuentaInfo]
 
 
 class ErrorResponse(BaseModel):
