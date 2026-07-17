@@ -44,6 +44,7 @@ class MaaSoftService:
 				
 				#-- Convertir a modelo Pydantic.
 				socio = SocioResponse(**data)
+				
 				return socio
 				
 		except httpx.HTTPStatusError as e:

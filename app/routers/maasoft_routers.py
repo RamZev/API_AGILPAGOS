@@ -1,15 +1,12 @@
 # app\routers\maasoft_routers.py
 from fastapi import APIRouter, HTTPException, status
 import httpx
-# import logging
 
-# from app.config import Config
 from app.models.maasoft_models import SocioResponse
 from app.services.maasoft_service import MaaSoftService
 # from app.dependencies
 
 
-# logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/maasoft", tags=["API - MAASoft"])
 
 
@@ -22,10 +19,10 @@ async def get_socio_cuit(
 	Obtiene los datos de un socio de MaaSoft por su CUIT.
 	
 	Args:
-		cuit: CUIT del socio (ej: 12345678912)
+	- cuit: CUIT del socio (ej: 12345678912)
 	
 	Returns:
-		Datos completos del socio
+	- Datos completos del socio
 	"""
 	try:
 		socio = await MaaSoftService.get_socio_cuit(cuit)
