@@ -39,7 +39,6 @@ async def listar_cvus(id_usuario: str):
 async def consultar_saldo(
 	id_cuenta: str,
 	# current_user: dict = Depends(get_current_user)
-	id_usuario: str = Query()
 ):
 	"""
 	Consulta el saldo de una CVU específica.
@@ -48,7 +47,7 @@ async def consultar_saldo(
 	- id_cuenta: ID de la cuenta (GUID) obtenido de /cuentas/cvus
 	"""
 	try:
-		saldo = await CuentasService.consultar_saldo(id_cuenta, id_usuario)
+		saldo = await CuentasService.consultar_saldo(id_cuenta)
 		return saldo
 		
 	except Exception as e:

@@ -43,26 +43,21 @@ class CuentasService:
 			raise
 	
 	@classmethod
-	async def consultar_saldo(cls, id_cuenta: str, id_usuario: str) -> SaldoResponse:
+	async def consultar_saldo(cls, id_cuenta: str) -> SaldoResponse:
 		"""
 		Consulta el saldo de una CVU.
 		
 		Args:
 		- id_cuenta: ID de la cuenta (GUID obtenido de /CVU)
-		- id_usuario: GUID del usuario (para el header)
 		
 		Returns:
 		- SaldoResponse con el saldo y fecha
 		"""
 		
-		#-- El endpoint /CVU requiere el header IDWEBUSUARIOFINAL y su valor es el id del alta de usuario en Agilpagos.
-		# headers = {"IDWEBUSUARIOFINAL": id_usuario}
-		
 		try:
 			response = await agilpagos_client.request(
 				method="GET",
-				endpoint=f"/Saldos/{id_cuenta}",
-				# headers=headers
+				endpoint=f"/Saldos/{id_cuenta}"
 			)
 			
 			return SaldoResponse(**response)
