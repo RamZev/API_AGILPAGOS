@@ -56,13 +56,13 @@ class CuentasService:
 		"""
 		
 		#-- El endpoint /CVU requiere el header IDWEBUSUARIOFINAL y su valor es el id del alta de usuario en Agilpagos.
-		headers = {"IDWEBUSUARIOFINAL": id_usuario}
+		# headers = {"IDWEBUSUARIOFINAL": id_usuario}
 		
 		try:
 			response = await agilpagos_client.request(
 				method="GET",
 				endpoint=f"/Saldos/{id_cuenta}",
-				headers=headers
+				# headers=headers
 			)
 			
 			return SaldoResponse(**response)
