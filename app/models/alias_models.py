@@ -41,7 +41,7 @@ class AliasChangeRequest(BaseModel):
 	def validate_ultimo_cambio(cls, v: datetime) -> datetime:
 		"""Valida que hayan pasado al menos 24 horas desde el último cambio"""
 		MIN_HORAS = Config.MIN_HORAS_CAMBIO_ALIAS
-		ahora = datetime.now()
+		ahora = datetime.now(tz=v.tzinfo) if v.tzinfo is not None else datetime.now()
 		diferencia = ahora - v
 		
 		if diferencia < timedelta(hours=MIN_HORAS):
