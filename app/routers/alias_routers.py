@@ -19,7 +19,7 @@ async def cambiar_alias(
 ):
 	"""
 	Cambia el alias de una CVU.
-
+	
 	Validaciones (realizadas en el modelo):
 	- El alias debe tener entre 6 y 20 caracteres
 	- Solo puede contener letras, números, puntos y guiones
@@ -39,7 +39,7 @@ async def cambiar_alias(
 			nuevo_alias=request.nuevo_alias,
 			id_usuario=id_usuario
 		)
-		
+		print(f"Resultado (Router): {resultado}")
 		return {
 			"success": True,
 			"message": f"Alias cambiado exitosamente a '{request.nuevo_alias}'",

@@ -42,7 +42,7 @@ class AliasService:
 				json={"newAlias": nuevo_alias},
 				headers=headers
 			)
-
+			print(f"Resultado (Service): {response}")
 			#-- Agilpagos devuelve 200 OK si el cambio fue exitoso.
 			return {"success": True, "message": "Alias cambiado exitosamente"}
 		
