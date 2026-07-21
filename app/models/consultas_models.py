@@ -62,4 +62,4 @@ class ConsultaCVUResponse(BaseModel):
 	cvu: str
 	alias: str
 	titulares: List[Titular]
-	favorita: str
+	favorita: bool
