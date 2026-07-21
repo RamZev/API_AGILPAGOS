@@ -157,4 +157,27 @@ class ConsultasService:
 		except Exception as e:
 			logger.error(f"Error al consultar CVU {cvu}: {e}")
 			raise
+	
+	@classmethod
+	async def consultar_cvu_alias(cls, alias: str) -> ConsultaCVUResponse:
+		"""
+		Consulta la información de una CVU por su alias.
+		
+		Args:
+			alias: Alias de la CVU a consultar
+		
+		Returns:
+			ConsultaCVUResponse con los datos de la CVU
+		"""
+		try:
+			response = await agilpagos_client.request(
+				method="GET",
+				endpoint=f"/Alias/{alias}/ConsultarCVU"
+			)
+			
+			return ConsultaCVUResponse(**response)
+			
+		except Exception as e:
+			logger.error(f"Error al consultar CVU {alias}: {e}")
+			raise
 

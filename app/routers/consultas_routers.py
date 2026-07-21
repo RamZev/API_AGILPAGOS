@@ -104,7 +104,6 @@ async def consultar_movimientos(
 			detail=f"Error al consultar movimientos: {str(e)}"
 		)
 
-
 #-- Consulta por CBU/CVU. (7.1)
 @router.get("/cvu/{cvu}", response_model=ConsultaCVUResponse)
 async def consultar_cvu(
@@ -124,6 +123,35 @@ async def consultar_cvu(
 			raise HTTPException(
 				status_code=status.HTTP_404_NOT_FOUND,
 				detail=f"CVU {cvu} no encontrada"
+			)
+		
+		return cvu_info
+		
+	except Exception as e:
+		raise HTTPException(
+			status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+			detail=f"Error al consultar CVU: {str(e)}"
+		)
+
+#-- Consulta por CBU/CVU por Alias. (7.2)
+@router.get("/cvu/alias/{alias}", response_model=ConsultaCVUResponse)
+async def consultar_cvu_alias(
+	alias: Annotated[str, Path()],
+	# current_user: dict = Depends(get_current_user)
+):
+	"""
+	Consulta los datos de una CVU específica por su alias.
+	
+	Args:
+	- alias: Alias de la CVU a consultar
+	"""
+	try:
+		cvu_info = await ConsultasService.consultar_cvu_alias(alias)
+		
+		if not cvu_info:
+			raise HTTPException(
+				status_code=status.HTTP_404_NOT_FOUND,
+				detail=f"CVU {alias} no encontrada"
 			)
 		
 		return cvu_info
