@@ -1,6 +1,7 @@
 # app/models/alias_models.py
 from pydantic import BaseModel, Field, field_validator
 from datetime import datetime, timedelta
+from typing import Optional
 import re
 
 from app.config import Config
@@ -10,7 +11,7 @@ class AliasChangeRequest(BaseModel):
 	"""Solicitud para cambiar el alias de una CVU"""
 	cvu: str = Field(..., min_length=22, max_length=22)
 	nuevo_alias: str = Field(..., min_length=6, max_length=20)
-	fecha_ultimo_cambio: datetime
+	fecha_ultimo_cambio: Optional[datetime] = None
 	
 	@field_validator('nuevo_alias')
 	@classmethod
@@ -38,8 +39,12 @@ class AliasChangeRequest(BaseModel):
 	
 	@field_validator('fecha_ultimo_cambio')
 	@classmethod
-	def validate_ultimo_cambio(cls, v: datetime) -> datetime:
-		"""Valida que hayan pasado al menos 24 horas desde el último cambio"""
+	def validate_ultimo_cambio(cls, v: Optional[datetime]) -> Optional[datetime]:
+		"""Valida que hayan pasado al menos 24 horas desde el último cambio solo si existe una fecha"""
+		if v is None:
+			#-- Si es None, no hay restricción (es la primera vez)
+			return v
+		
 		MIN_HORAS = Config.MIN_HORAS_CAMBIO_ALIAS
 		ahora = datetime.now(tz=v.tzinfo) if v.tzinfo is not None else datetime.now()
 		diferencia = ahora - v

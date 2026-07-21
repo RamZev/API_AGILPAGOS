@@ -7,7 +7,7 @@ import httpx
 
 from app.config import Config
 from app.core.http_client import agilpagos_client
-from app.models.onboarding_models import UsuarioAltaRequest
+from app.models.onboarding_models import UsuarioAltaRequest, BajaCVURequest
 from app.core.exceptions import (
 	AgilpagosValidationError,
 	UsuarioYaExisteError
@@ -18,7 +18,7 @@ logger = logging.getLogger(__name__)
 
 
 class OnboardingService:
-	"""Servicio para manejar el alta de usuarios y CVU"""
+	"""Servicio para manejar el Onboarding de usuarios"""
 	
 	#-- Valores constantes (según documentación).
 	# ID_TIPO_DOCUMENTO = "209C1CAA-C56D-4E03-BB40-E9EF2F319A3F"
@@ -163,3 +163,137 @@ class OnboardingService:
 			"idTipoPersona": cls.ID_TIPO_PERSONA,
 			"idTipoCuenta": cls.ID_TIPO_CUENTA
 		}
+	
+	@classmethod
+	async def baja_cvu(
+		cls,
+		request: BajaCVURequest,
+		id_usuario: str
+	) -> Dict[str, Any]:
+		"""
+		Da de baja una CVU ante Coelsa (eliminación definitiva).
+		
+		Args:
+			request: Datos de la solicitud (cvu, idMotivoBaja, observaciones)
+			id_usuario: GUID del usuario (para el header IDWEBUSUARIOFINAL)
+		
+		Returns:
+			Respuesta de Agilpagos (vacía si es exitoso, o error)
+		
+		Raises:
+			AgilpagosValidationError: Si Agilpagos devuelve un error
+			ValueError: Si la CVU no existe o hay otros problemas
+		"""
+		headers = {"IDWEBUSUARIOFINAL": id_usuario}
+		
+		#-- Construir el body de la solicitud.
+		body = {
+			"idMotivoBaja": request.idMotivoBaja
+		}
+		if request.observaciones:
+			body["observaciones"] = request.observaciones
+		
+		try:
+			logger.info(f"🔄 Dando de baja CVU: {request.cvu} para usuario {id_usuario}")
+			
+			#-- El endpoint de baja es DELETE /CVU/{cvu}.
+			response = await agilpagos_client.request(
+				method="DELETE",
+				endpoint=f"/CVU/{request.cvu}",
+				json=body,
+				headers=headers
+			)
+			
+			#-- Si Agilpagos devuelve 200 OK, la baja fue exitosa.
+			logger.info(f"✅ CVU {request.cvu} dada de baja exitosamente")
+			return response or {"message": "Baja exitosa"}
+			
+		except Exception as e:
+			logger.error(f"❌ Error al dar de baja CVU {request.cvu}: {e}")
+			
+			#-- Intentar extraer el mensaje de error de Agilpagos si está disponible.
+			if hasattr(e, 'response'):
+				try:
+					error_data = e.response.json()
+					error_message = error_data.get('errors', {}).get('', ['Error desconocido'])[0]
+					raise AgilpagosValidationError(f"Error de Agilpagos: {error_message}")
+				except:
+					pass
+			
+			raise AgilpagosValidationError(f"Error al dar de baja la CVU: {str(e)}")
+	
+	@classmethod
+	async def verificar_cvu_pertenece_usuario(
+		cls,
+		cvu: str,
+		id_usuario: str
+	) -> bool:
+		"""
+		Verifica que una CVU pertenezca al usuario.
+		
+		Args:
+			cvu: CVU a verificar
+			id_usuario: GUID del usuario
+		
+		Returns:
+			True si la CVU pertenece al usuario, False en caso contrario
+		"""
+		try:
+			#-- Obtener todas las CVU del usuario.
+			headers = {"IDWEBUSUARIOFINAL": id_usuario}
+			response = await agilpagos_client.request(
+				method="GET",
+				endpoint="/CVU",
+				headers=headers
+			)
+			
+			#-- Verificar si el CVU está en la lista.
+			if isinstance(response, list):
+				for cuenta in response:
+					if cuenta.get("cvu") == cvu:
+						return True
+			return False
+			
+		except Exception as e:
+			logger.error(f"Error al verificar propiedad de CVU: {e}")
+			#-- En caso de error, asumimos que no pertenece (por seguridad).
+			return False
+
+
+	@classmethod
+	async def cambiar_alias(
+		cls,
+		cvu: str,
+		nuevo_alias: str,
+		id_usuario: str
+	) -> Dict[str, Any]:
+		"""
+		Cambia el alias de una CVU.
+		
+		Args:
+			cvu: CVU a modificar
+			nuevo_alias: Nuevo alias (ya validado)
+			id_usuario: GUID del usuario (para el header)
+		
+		Returns:
+			Respuesta de Agilpagos
+		
+		Raises:
+			AgilpagosValidationError: Si Agilpagos rechaza el cambio
+		"""
+		headers = {"IDWEBUSUARIOFINAL": id_usuario}
+		
+		try:
+			response = await agilpagos_client.request(
+				method="PUT",
+				endpoint=f"/Alias/{cvu}",
+				json={"newAlias": nuevo_alias},
+				headers=headers
+			)
+			print(f"Resultado (Service): {response}")
+			#-- Agilpagos devuelve 200 OK si el cambio fue exitoso.
+			return {"success": True, "message": "Alias cambiado exitosamente"}
+		
+		except Exception as e:
+			logger.error(f"Error al cambiar alias: {e}")
+			raise AgilpagosValidationError(f"Error al cambiar alias: {str(e)}")

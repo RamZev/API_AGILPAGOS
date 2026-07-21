@@ -52,6 +52,7 @@ class Config:
 	
 	#-- Otros parámetros.
 	MIN_HORAS_CAMBIO_ALIAS = int(os.getenv("MIN_HORAS_CAMBIO_ALIAS", 24))
+	ID_MOTIVO_BAJA_CVU = os.getenv("ID_MOTIVO_BAJA_CVU")
 	
 	@classmethod
 	def validate(cls):

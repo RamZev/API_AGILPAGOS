@@ -11,8 +11,7 @@ from app.routers import (
 	maestros_router,
 	onboarding_routers,
 	test_routers,
-	maasoft_routers,
-	alias_routers
+	maasoft_routers
 )
 
 
@@ -77,7 +76,6 @@ app.include_router(maestros_router.router)
 app.include_router(onboarding_routers.router)
 app.include_router(test_routers.router)
 app.include_router(cuentas_routers.router)
-app.include_router(alias_routers.router)
 
 if not Config.is_production():
 	app.include_router(maasoft_routers.router)
