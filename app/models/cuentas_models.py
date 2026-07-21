@@ -1,4 +1,4 @@
-# app/models/cuentas.py
+# app\models\cuentas_models.py
 from pydantic import BaseModel, Field
 from typing import Optional, List
 from datetime import datetime

@@ -1,14 +1,21 @@
-# app/routers/cuentas.py
+# app\routers\cuentas_routers.py
 from fastapi import APIRouter, HTTPException, status, Query, Path, Depends
 from typing import Annotated, List
 
 from app.services.cuentas_service import CuentasService
 from app.dependencies import get_current_user
-from app.models.cuentas_models import CVUInfo, SaldoResponse, MovimientoParams, MovimientosResponse
+from app.models.cuentas_models import (
+	CVUInfo,
+	SaldoResponse,
+	MovimientoParams,
+	MovimientosResponse
+)
+
 
 router = APIRouter(prefix="/cuentas", tags=["Cuentas"])
 
 
+#-- Obtención de IdCuenta de la CVU. (6.1)
 @router.get("/cvus", response_model=List[CVUInfo])
 async def listar_cvus(id_usuario: str):
 # async def listar_cvus(current_user: dict = Depends(get_current_user)):
@@ -35,6 +42,7 @@ async def listar_cvus(id_usuario: str):
 		)
 
 
+#-- Consulta de Saldo. (6.2)
 @router.get("/saldo/{id_cuenta}", response_model=SaldoResponse)
 async def consultar_saldo(
 	id_cuenta: str,
@@ -57,6 +65,7 @@ async def consultar_saldo(
 		)
 
 
+#-- Consulta de Movimientos. (6.3)
 @router.get("/movimientos/{id_cuenta}", response_model=MovimientosResponse)
 async def consultar_movimientos(
 	id_cuenta: Annotated[str, Path()],

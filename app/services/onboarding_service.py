@@ -21,10 +21,6 @@ class OnboardingService:
 	"""Servicio para manejar el Onboarding de usuarios"""
 	
 	#-- Valores constantes (según documentación).
-	# ID_TIPO_DOCUMENTO = "209C1CAA-C56D-4E03-BB40-E9EF2F319A3F"
-	# ID_PAIS_ARGENTINA = "76B19E61-B8DC-40F4-BFAB-422CBFFE5002"
-	# ID_TIPO_PERSONA = "20EB917-7CA8-49E0-9E0B-CA8293218ACA"
-	# ID_TIPO_CUENTA = "D2483A34-78BE-40A2-B8CB-07AD4BCF6F61"
 	ID_TIPO_DOCUMENTO = Config.API_SG_ID_TIPO_DOCUMENTO
 	ID_PAIS_ARGENTINA = Config.API_SG_ID_PAIS_DOMICILIO
 	API_SG_ID_ENTIDAD_TIPO_DOCUMENTO = Config.API_SG_ID_ENTIDAD_TIPO_DOCUMENTO
@@ -163,6 +159,44 @@ class OnboardingService:
 			"idTipoPersona": cls.ID_TIPO_PERSONA,
 			"idTipoCuenta": cls.ID_TIPO_CUENTA
 		}
+
+	@classmethod
+	async def cambiar_alias(
+		cls,
+		cvu: str,
+		nuevo_alias: str,
+		id_usuario: str
+	) -> Dict[str, Any]:
+		"""
+		Cambia el alias de una CVU.
+		
+		Args:
+			cvu: CVU a modificar
+			nuevo_alias: Nuevo alias (ya validado)
+			id_usuario: GUID del usuario (para el header)
+		
+		Returns:
+			Respuesta de Agilpagos
+		
+		Raises:
+			AgilpagosValidationError: Si Agilpagos rechaza el cambio
+		"""
+		headers = {"IDWEBUSUARIOFINAL": id_usuario}
+		
+		try:
+			response = await agilpagos_client.request(
+				method="PUT",
+				endpoint=f"/Alias/{cvu}",
+				json={"newAlias": nuevo_alias},
+				headers=headers
+			)
+			print(f"Resultado (Service): {response}")
+			#-- Agilpagos devuelve 200 OK si el cambio fue exitoso.
+			return {"success": True, "message": "Alias cambiado exitosamente"}
+		
+		except Exception as e:
+			logger.error(f"Error al cambiar alias: {e}")
+			raise AgilpagosValidationError(f"Error al cambiar alias: {str(e)}")	
 	
 	@classmethod
 	async def baja_cvu(
@@ -258,42 +292,3 @@ class OnboardingService:
 			logger.error(f"Error al verificar propiedad de CVU: {e}")
 			#-- En caso de error, asumimos que no pertenece (por seguridad).
 			return False
-
-
-	@classmethod
-	async def cambiar_alias(
-		cls,
-		cvu: str,
-		nuevo_alias: str,
-		id_usuario: str
-	) -> Dict[str, Any]:
-		"""
-		Cambia el alias de una CVU.
-		
-		Args:
-			cvu: CVU a modificar
-			nuevo_alias: Nuevo alias (ya validado)
-			id_usuario: GUID del usuario (para el header)
-		
-		Returns:
-			Respuesta de Agilpagos
-		
-		Raises:
-			AgilpagosValidationError: Si Agilpagos rechaza el cambio
-		"""
-		headers = {"IDWEBUSUARIOFINAL": id_usuario}
-		
-		try:
-			response = await agilpagos_client.request(
-				method="PUT",
-				endpoint=f"/Alias/{cvu}",
-				json={"newAlias": nuevo_alias},
-				headers=headers
-			)
-			print(f"Resultado (Service): {response}")
-			#-- Agilpagos devuelve 200 OK si el cambio fue exitoso.
-			return {"success": True, "message": "Alias cambiado exitosamente"}
-		
-		except Exception as e:
-			logger.error(f"Error al cambiar alias: {e}")
-			raise AgilpagosValidationError(f"Error al cambiar alias: {str(e)}")

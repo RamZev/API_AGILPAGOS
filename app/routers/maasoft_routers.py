@@ -10,6 +10,7 @@ from app.services.maasoft_service import MaaSoftService
 router = APIRouter(prefix="/maasoft", tags=["API - MAASoft"])
 
 
+#-- Consultar un socio por CUIT.
 @router.get("/socio/{cuit}", response_model=SocioResponse)
 async def get_socio_cuit(
 	cuit: int,
@@ -19,10 +20,10 @@ async def get_socio_cuit(
 	Obtiene los datos de un socio de MaaSoft por su CUIT.
 	
 	Args:
-	- cuit: CUIT del socio (ej: 12345678912)
+	- cuit: CUIT del socio (ej: 12345678912).
 	
 	Returns:
-	- Datos completos del socio
+	- Datos completos del socio.
 	"""
 	try:
 		socio = await MaaSoftService.get_socio_cuit(cuit)
@@ -57,6 +58,7 @@ async def get_socio_cuit(
 		)
 
 
+#-- Consultar un socio por CÓDIGO.
 @router.get("/sociocodigo/{codigo}", response_model=SocioResponse)
 async def get_socio_codigo(
 	codigo: int,
@@ -66,10 +68,10 @@ async def get_socio_codigo(
 	Obtiene los datos de un socio de MaaSoft por su CÓDIGO.
 	
 	Args:
-		codigo: Código del socio (ej: 1234)
+	- codigo: Código del socio (ej: 1234).
 	
 	Returns:
-		Datos completos del socio
+	- Datos completos del socio.
 	"""
 	try:
 		socio = await MaaSoftService.get_socio_codigo(codigo)
@@ -104,6 +106,7 @@ async def get_socio_codigo(
 		)
 
 
+#-- Verificar si un socio existe por CUIT.
 @router.get("/socio/verificar/{cuit}")
 async def verificar_socio(
 	cuit: int,
@@ -113,10 +116,10 @@ async def verificar_socio(
 	Verifica si un socio existe en MaaSoft.
 	
 	Args:
-		cuit: CUIT del socio
+	- cuit: CUIT del socio.
 	
 	Returns:
-		{"existe": True/False}
+	- {"existe": True/False}
 	"""
 	try:
 		existe = await MaaSoftService.existe_socio(cuit)

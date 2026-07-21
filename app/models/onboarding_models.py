@@ -105,47 +105,6 @@ class ErrorResponse(BaseModel):
 	status_code: int
 
 
-class BajaCVURequest(BaseModel):
-	"""Solicitud para dar de baja una CVU ante Coelsa"""
-	cvu: str = Field(..., min_length=22, max_length=22, description="CVU a dar de baja")
-	idMotivoBaja: str = Field(
-		default=Config.ID_MOTIVO_BAJA_CVU,
-		description="Motivo de baja (GUID fijo según documentación)"
-	)
-	observaciones: Optional[str] = Field(
-		None,
-		max_length=200,
-		description="Observaciones adicionales sobre la baja"
-	)
-	
-	@field_validator('cvu')
-	@classmethod
-	def validate_cvu(cls, v: str) -> str:
-		"""Valida que el CVU tenga 22 dígitos"""
-		if not v.isdigit() or len(v) != 22:
-			raise ValueError("El CVU debe tener 22 dígitos numéricos")
-		return v
-	
-	@field_validator('idMotivoBaja')
-	@classmethod
-	def validate_motivo(cls, v: str) -> str:
-		"""Valida que el motivo sea el GUID correcto (por seguridad)"""
-		GUID_CORRECTO = Config.ID_MOTIVO_BAJA_CVU
-		if v.lower() != GUID_CORRECTO.lower():
-			# No bloqueamos, pero al menos advertimos o normalizamos
-			# Podríamos lanzar ValueError si queremos ser estrictos
-			# return GUID_CORRECTO  # Forzar el GUID correcto
-			pass
-		return v
-
-
-class BajaCVUResponse(BaseModel):
-	"""Respuesta de la baja de CVU"""
-	success: bool
-	message: str
-	cvu: str
-
-
 class AliasChangeRequest(BaseModel):
 	"""Solicitud para cambiar el alias de una CVU"""
 	cvu: str = Field(..., min_length=22, max_length=22)
@@ -195,3 +154,44 @@ class AliasChangeRequest(BaseModel):
 				f"Puedes intentarlo nuevamente en {horas_restantes:.1f} horas."
 			)
 		return v
+
+
+class BajaCVURequest(BaseModel):
+	"""Solicitud para dar de baja una CVU ante Coelsa"""
+	cvu: str = Field(..., min_length=22, max_length=22, description="CVU a dar de baja")
+	idMotivoBaja: str = Field(
+		default=Config.ID_MOTIVO_BAJA_CVU,
+		description="Motivo de baja (GUID fijo según documentación)"
+	)
+	observaciones: Optional[str] = Field(
+		None,
+		max_length=200,
+		description="Observaciones adicionales sobre la baja"
+	)
+	
+	@field_validator('cvu')
+	@classmethod
+	def validate_cvu(cls, v: str) -> str:
+		"""Valida que el CVU tenga 22 dígitos"""
+		if not v.isdigit() or len(v) != 22:
+			raise ValueError("El CVU debe tener 22 dígitos numéricos")
+		return v
+	
+	@field_validator('idMotivoBaja')
+	@classmethod
+	def validate_motivo(cls, v: str) -> str:
+		"""Valida que el motivo sea el GUID correcto (por seguridad)"""
+		GUID_CORRECTO = Config.ID_MOTIVO_BAJA_CVU
+		if v.lower() != GUID_CORRECTO.lower():
+			# No bloqueamos, pero al menos advertimos o normalizamos
+			# Podríamos lanzar ValueError si queremos ser estrictos
+			# return GUID_CORRECTO  # Forzar el GUID correcto
+			pass
+		return v
+
+
+class BajaCVUResponse(BaseModel):
+	"""Respuesta de la baja de CVU"""
+	success: bool
+	message: str
+	cvu: str

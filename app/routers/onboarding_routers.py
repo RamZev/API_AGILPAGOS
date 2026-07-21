@@ -115,71 +115,6 @@ async def consultar_usuario(cuit: str):
 		)
 
 
-#-- Baja de CVU ante COELSA (eliminación definitiva). (3.3.2)
-@router.delete("/cvu/baja", response_model=BajaCVUResponse)
-async def baja_cvu(
-	request: BajaCVURequest,
-	id_usuario: Annotated[str, Query(description="ID del usuario (GUID)")],
-	# current_user: dict = Depends(get_current_user)  # Descomentar en producción
-):
-	"""
-	Da de baja una CVU ante Coelsa (eliminación definitiva).
-	
-	⚠️ ADVERTENCIA: Esta acción es irreversible. La CVU no podrá ser recuperada.
-	
-	Requisitos:
-	- La CVU debe pertenecer al usuario
-	- La CVU debe tener saldo cero (según documentación de Agilpagos)
-	- Se debe enviar el motivo de baja (GUID fijo)
-	
-	Args:
-		request: Datos de la solicitud (cvu, idMotivoBaja, observaciones)
-		id_usuario: ID del usuario (GUID) para el header IDWEBUSUARIOFINAL
-	"""
-	try:
-		# 1. Verificar que el usuario esté autenticado
-		# if not current_user:
-		#     raise HTTPException(
-		#         status_code=status.HTTP_401_UNAUTHORIZED,
-		#         detail="Usuario no autenticado"
-		#     )
-		
-		# 2. Verificar que la CVU pertenezca al usuario (opcional pero recomendado)
-		es_propietario = await OnboardingService.verificar_cvu_pertenece_usuario(
-			request.cvu,
-			id_usuario
-		)
-		
-		if not es_propietario:
-			raise HTTPException(
-				status_code=status.HTTP_403_FORBIDDEN,
-				detail=f"La CVU {request.cvu} no pertenece al usuario especificado"
-			)
-		
-		# 3. Ejecutar la baja
-		await OnboardingService.baja_cvu(request, id_usuario)
-		
-		# 4. Retornar respuesta exitosa
-		return BajaCVUResponse(
-			success=True,
-			message=f"CVU {request.cvu} dada de baja exitosamente",
-			cvu=request.cvu
-		)
-		
-	except AgilpagosValidationError as e:
-		raise HTTPException(
-			status_code=status.HTTP_400_BAD_REQUEST,
-			detail=str(e)
-		)
-	except HTTPException:
-		raise
-	except Exception as e:
-		raise HTTPException(
-			status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-			detail=f"Error al dar de baja la CVU: {str(e)}"
-		)
-
-
 #-- Asignación/Cambio de Alias. (3.2)
 @router.put("/alias/cambiar")
 async def cambiar_alias(
@@ -228,4 +163,69 @@ async def cambiar_alias(
 		raise HTTPException(
 			status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
 			detail=f"Error al cambiar alias: {str(e)}"
+		)
+
+
+#-- Baja de CVU ante COELSA (eliminación definitiva). (3.3.2)
+@router.delete("/cvu/baja", response_model=BajaCVUResponse)
+async def baja_cvu(
+	request: BajaCVURequest,
+	id_usuario: Annotated[str, Query(description="ID del usuario (GUID)")],
+	# current_user: dict = Depends(get_current_user)  # Descomentar en producción
+):
+	"""
+	Da de baja una CVU ante Coelsa (eliminación definitiva).
+	
+	⚠️ ADVERTENCIA: Esta acción es irreversible. La CVU no podrá ser recuperada.
+	
+	Requisitos:
+	- La CVU debe pertenecer al usuario
+	- La CVU debe tener saldo cero (según documentación de Agilpagos)
+	- Se debe enviar el motivo de baja (GUID fijo)
+	
+	Args:
+	- request: Datos de la solicitud (cvu, idMotivoBaja, observaciones)
+	- id_usuario: ID del usuario (GUID) para el header IDWEBUSUARIOFINAL
+	"""
+	try:
+		#-- 1. Verificar que el usuario esté autenticado.
+		# if not current_user:
+		#     raise HTTPException(
+		#         status_code=status.HTTP_401_UNAUTHORIZED,
+		#         detail="Usuario no autenticado"
+		#     )
+		
+		#-- 2. Verificar que la CVU pertenezca al usuario (opcional pero recomendado).
+		es_propietario = await OnboardingService.verificar_cvu_pertenece_usuario(
+			request.cvu,
+			id_usuario
+		)
+		
+		if not es_propietario:
+			raise HTTPException(
+				status_code=status.HTTP_403_FORBIDDEN,
+				detail=f"La CVU {request.cvu} no pertenece al usuario especificado"
+			)
+		
+		#-- 3. Ejecutar la baja.
+		await OnboardingService.baja_cvu(request, id_usuario)
+		
+		#-- 4. Retornar respuesta exitosa.
+		return BajaCVUResponse(
+			success=True,
+			message=f"CVU {request.cvu} dada de baja exitosamente",
+			cvu=request.cvu
+		)
+		
+	except AgilpagosValidationError as e:
+		raise HTTPException(
+			status_code=status.HTTP_400_BAD_REQUEST,
+			detail=str(e)
+		)
+	except HTTPException:
+		raise
+	except Exception as e:
+		raise HTTPException(
+			status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+			detail=f"Error al dar de baja la CVU: {str(e)}"
 		)
