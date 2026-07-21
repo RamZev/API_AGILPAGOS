@@ -280,12 +280,14 @@ class OnboardingService:
 				endpoint="/CVU",
 				headers=headers
 			)
-			
+			print(f"Verificando CVU {cvu} para usuario {id_usuario}, response: {response}")
 			#-- Verificar si el CVU está en la lista.
 			if isinstance(response, list):
 				for cuenta in response:
 					if cuenta.get("cvu") == cvu:
+						logger.info(f"CVU {cvu} pertenece al usuario {id_usuario}, procede a su baja.")
 						return True
+			logger.warning(f"CVU {cvu} no pertenece al usuario {id_usuario} o no existe, no procede su baja.")
 			return False
 			
 		except Exception as e:

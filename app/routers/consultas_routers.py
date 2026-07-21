@@ -1,10 +1,10 @@
-# app\routers\cuentas_routers.py
+# app\routers\consultas_routers.py
 from fastapi import APIRouter, HTTPException, status, Query, Path, Depends
 from typing import Annotated, List
 
-from app.services.cuentas_service import CuentasService
+from app.services.consultas_service import ConsultasService
 from app.dependencies import get_current_user
-from app.models.cuentas_models import (
+from app.models.consultas_models import (
 	CVUInfo,
 	SaldoResponse,
 	MovimientoParams,
@@ -12,7 +12,7 @@ from app.models.cuentas_models import (
 )
 
 
-router = APIRouter(prefix="/cuentas", tags=["Cuentas"])
+router = APIRouter(prefix="/consulta", tags=["Consultas"])
 
 
 #-- Obtención de IdCuenta de la CVU. (6.1)
@@ -32,7 +32,7 @@ async def listar_cvus(id_usuario: str):
 				detail="ID de usuario no encontrado en el token"
 			)
 		
-		cvus = await CuentasService.listar_cvus(id_usuario)
+		cvus = await ConsultasService.listar_cvus(id_usuario)
 		return cvus
 		
 	except Exception as e:
@@ -55,7 +55,7 @@ async def consultar_saldo(
 	- id_cuenta: ID de la cuenta (GUID) obtenido de /cuentas/cvus
 	"""
 	try:
-		saldo = await CuentasService.consultar_saldo(id_cuenta)
+		saldo = await ConsultasService.consultar_saldo(id_cuenta)
 		return saldo
 		
 	except Exception as e:
@@ -90,7 +90,7 @@ async def consultar_movimientos(
 		# 		detail="ID de usuario no encontrado en el token"
 		# 	)
 		
-		movimientos = await CuentasService.consultar_movimientos(
+		movimientos = await ConsultasService.consultar_movimientos(
 			id_cuenta=id_cuenta,
 			parametros=params
 		)

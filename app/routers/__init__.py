@@ -2,7 +2,7 @@
 """Routers de la API"""
 from app.routers import (
 	auth_routers,
-	cuentas_routers,
+	consultas_routers,
 	maestros_router,
 	onboarding_routers,
 	test_routers,

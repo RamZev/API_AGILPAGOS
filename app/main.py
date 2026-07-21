@@ -7,7 +7,7 @@ import logging
 from app.config import Config
 from app.routers import (
 	auth_routers,
-	cuentas_routers,
+	consultas_routers,
 	maestros_router,
 	onboarding_routers,
 	test_routers,
@@ -74,7 +74,7 @@ app.add_middleware(
 app.include_router(auth_routers.router)
 app.include_router(maestros_router.router)
 app.include_router(onboarding_routers.router)
-app.include_router(cuentas_routers.router)
+app.include_router(consultas_routers.router)
 app.include_router(test_routers.router)
 
 if not Config.is_production():

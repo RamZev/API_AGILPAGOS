@@ -1,9 +1,9 @@
-# app/services/cuentas_service.py
+# app\services\consultas_service.py
 import logging
 from typing import List, Dict, Any
 
 from app.core.http_client import agilpagos_client
-from app.models.cuentas_models import (
+from app.models.consultas_models import (
 	CVUInfo,
 	SaldoResponse,
 	MovimientoParams,
@@ -13,7 +13,7 @@ from app.models.cuentas_models import (
 logger = logging.getLogger(__name__)
 
 
-class CuentasService:
+class ConsultasService:
 	"""Servicio para manejar cuentas (CVU), saldos y movimientos"""
 	
 	@classmethod
