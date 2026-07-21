@@ -8,7 +8,8 @@ from app.models.consultas_models import (
 	CVUInfo,
 	SaldoResponse,
 	MovimientoParams,
-	MovimientosResponse
+	MovimientosResponse,
+	ConsultaCVUResponse
 )
 
 
@@ -101,4 +102,34 @@ async def consultar_movimientos(
 		raise HTTPException(
 			status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
 			detail=f"Error al consultar movimientos: {str(e)}"
+		)
+
+
+#-- Consulta por CBU/CVU. (7.1)
+@router.get("/cvu/{cvu}", response_model=ConsultaCVUResponse)
+async def consultar_cvu(
+	cvu: Annotated[str, Path()],
+	# current_user: dict = Depends(get_current_user)
+):
+	"""
+	Consulta los datos de una CVU específica.
+	
+	Args:
+	- cvu: CBU/CVU a consultar
+	"""
+	try:
+		cvu_info = await ConsultasService.consultar_cvu(cvu)
+		
+		if not cvu_info:
+			raise HTTPException(
+				status_code=status.HTTP_404_NOT_FOUND,
+				detail=f"CVU {cvu} no encontrada"
+			)
+		
+		return cvu_info
+		
+	except Exception as e:
+		raise HTTPException(
+			status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+			detail=f"Error al consultar CVU: {str(e)}"
 		)

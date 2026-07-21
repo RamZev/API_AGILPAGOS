@@ -3,6 +3,8 @@ from pydantic import BaseModel, Field
 from typing import Optional, List
 from datetime import datetime
 
+from app.models.onboarding_models import Titular
+
 
 class CVUInfo(BaseModel):
 	"""Información de una CVU"""
@@ -53,3 +55,11 @@ class MovimientosResponse(BaseModel):
 	page: int
 	size: int
 	pages: int
+
+
+class ConsultaCVUResponse(BaseModel):
+	"""Respuesta de consulta de CBU/CVU"""
+	cvu: str
+	alias: str
+	titulares: List[Titular]
+	favorita: str

@@ -7,7 +7,8 @@ from app.models.consultas_models import (
 	CVUInfo,
 	SaldoResponse,
 	MovimientoParams,
-	MovimientoResponse
+	MovimientoResponse,
+	ConsultaCVUResponse
 )
 
 logger = logging.getLogger(__name__)
@@ -133,3 +134,27 @@ class ConsultasService:
 		except Exception as e:
 			logger.error(f"Error al consultar movimientos de cuenta {id_cuenta}: {e}")
 			raise
+	
+	@classmethod
+	async def consultar_cvu(cls, cvu: str) -> ConsultaCVUResponse:
+		"""
+		Consulta la información de una CVU por su número.
+		
+		Args:
+			cvu: Número de CVU a consultar
+		
+		Returns:
+			ConsultaCVUResponse con los datos de la CVU
+		"""
+		try:
+			response = await agilpagos_client.request(
+				method="GET",
+				endpoint=f"/CVU/{cvu}"
+			)
+			
+			return ConsultaCVUResponse(**response)
+			
+		except Exception as e:
+			logger.error(f"Error al consultar CVU {cvu}: {e}")
+			raise
+
