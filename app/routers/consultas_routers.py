@@ -164,7 +164,7 @@ async def consultar_cvu_alias(
 		)
 
 #-- Consulta de Estados de Transacción.
-@router.get("/estados-transacción", response_model=List[EstadosTransaccionResponse])
+@router.get("/estados-transaccion", response_model=List[EstadosTransaccionResponse])
 async def consultar_estados_transaccion():
 	"""
 	Consulta el listado de Estados de Transacción.
