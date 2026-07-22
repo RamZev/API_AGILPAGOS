@@ -63,3 +63,9 @@ class ConsultaCVUResponse(BaseModel):
 	alias: str
 	titulares: List[Titular]
 	favorita: bool
+
+
+class EstadosTransaccionResponse(BaseModel):
+	"""Respuesta de consulta del listado de Estados de Transacción"""
+	id: str
+	descripcion: str

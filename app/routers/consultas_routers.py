@@ -9,7 +9,8 @@ from app.models.consultas_models import (
 	SaldoResponse,
 	MovimientoParams,
 	MovimientosResponse,
-	ConsultaCVUResponse
+	ConsultaCVUResponse,
+	EstadosTransaccionResponse
 )
 
 
@@ -160,4 +161,19 @@ async def consultar_cvu_alias(
 		raise HTTPException(
 			status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
 			detail=f"Error al consultar CVU: {str(e)}"
+		)
+
+#-- Consulta de Estados de Transacciones.
+@router.get("/estados-transacciones", response_model=List[EstadosTransaccionResponse])
+async def consultar_estados_transaccion():
+	"""
+	Consulta el listado de Estados de Transacciones.
+	"""
+	try:
+		estados = await ConsultasService.consultar_estados_transacciones()
+		return estados
+	except Exception as e:
+		raise HTTPException(
+			status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+			detail=f"Error al consultar estados de transacciones: {str(e)}"
 		)

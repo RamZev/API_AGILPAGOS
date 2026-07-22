@@ -56,15 +56,12 @@ class AgilpagosClient:
 	
 	def _is_token_expired(self) -> bool:
 		"""Verifica si el token está por expirar (menos de 5 minutos de margen)"""
-		print("*-- viene a comprobar la expiración del token")
 		if not self._token_expiration:
 			return True
 		
 		margin = timedelta(minutes=5)
-		print(f"*-- margin: {margin}")
-		print(f"*-- type(margin): {type(margin)}")
 		
-		#-- CORRECCIÓN: Usar datetime.now(timezone.utc) para obtener un objeto "aware".
+		#-- Usar datetime.now(timezone.utc) para obtener un objeto "aware".
 		now_utc = datetime.now(timezone.utc)
 		
 		#-- Asegurarse de que _token_expiration sea "aware" (UTC).
@@ -76,13 +73,8 @@ class AgilpagosClient:
 			#-- Si ya es aware, lo convertimos a UTC por si acaso.
 			exp = exp.astimezone(timezone.utc)
 		
-		print(f"*-- now_utc: {now_utc}")
-		print(f"*-- exp: {exp}")
-		print(f"*-- exp - margin: {exp - margin}")
-		
 		#-- Comparación segura entre objetos "aware".
 		is_expired = now_utc >= (exp - margin)
-		print(f"*-- is_expired: {is_expired}")
 		
 		return is_expired
 	
