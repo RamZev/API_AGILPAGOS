@@ -183,9 +183,9 @@ class ConsultasService:
 			raise
 
 	@classmethod
-	async def consultar_estados_transacciones(cls) -> List[EstadosTransaccionResponse]:
+	async def consultar_estados_transaccion(cls) -> List[EstadosTransaccionResponse]:
 		"""
-		Consulta el listado de Estados de Transacciones.
+		Consulta el listado de Estados de Transacción.
 		
 		Returns:
 			Lista de EstadosTransaccionResponse
@@ -201,5 +201,5 @@ class ConsultasService:
 			return []
 			
 		except Exception as e:
-			logger.error(f"Error al consultar estados de transacciones: {e}")
+			logger.error(f"Error al consultar estados de transacción: {e}")
 			raise

@@ -163,17 +163,17 @@ async def consultar_cvu_alias(
 			detail=f"Error al consultar CVU: {str(e)}"
 		)
 
-#-- Consulta de Estados de Transacciones.
-@router.get("/estados-transacciones", response_model=List[EstadosTransaccionResponse])
+#-- Consulta de Estados de Transacción.
+@router.get("/estados-transacción", response_model=List[EstadosTransaccionResponse])
 async def consultar_estados_transaccion():
 	"""
-	Consulta el listado de Estados de Transacciones.
+	Consulta el listado de Estados de Transacción.
 	"""
 	try:
-		estados = await ConsultasService.consultar_estados_transacciones()
+		estados = await ConsultasService.consultar_estados_transaccion()
 		return estados
 	except Exception as e:
 		raise HTTPException(
 			status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-			detail=f"Error al consultar estados de transacciones: {str(e)}"
+			detail=f"Error al consultar estados de transacción: {str(e)}"
 		)
