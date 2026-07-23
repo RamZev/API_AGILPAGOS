@@ -9,7 +9,8 @@ from app.models.consultas_models import (
 	MovimientoParams,
 	MovimientoResponse,
 	ConsultaCVUResponse,
-	EstadosTransaccionResponse
+	EstadosTransaccionResponse,
+	ConceptosTransaccionResponse,
 )
 
 logger = logging.getLogger(__name__)
@@ -198,6 +199,28 @@ class ConsultasService:
 			
 			if isinstance(response, list):
 				return [EstadosTransaccionResponse(**item) for item in response]
+			return []
+			
+		except Exception as e:
+			logger.error(f"Error al consultar estados de transacción: {e}")
+			raise
+
+	@classmethod
+	async def consultar_conceptos_transaccion(cls) -> List[ConceptosTransaccionResponse]:
+		"""
+		Consulta el listado de Conceptos de Transacción.
+		
+		Returns:
+			Lista de EstadosTransaccionResponse
+		"""
+		try:
+			response = await agilpagos_client.request(
+				method="GET",
+				endpoint="/ConceptosTransacciones"
+			)
+			
+			if isinstance(response, list):
+				return [ConceptosTransaccionResponse(**item) for item in response]
 			return []
 			
 		except Exception as e:

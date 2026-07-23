@@ -69,3 +69,10 @@ class EstadosTransaccionResponse(BaseModel):
 	"""Respuesta de consulta del listado de Estados de Transacción"""
 	id: str
 	descripcion: str
+
+
+class ConceptosTransaccionResponse(BaseModel):
+	"""Respuesta de consulta del listado de Conceptos de Transacción"""
+	id: str
+	descripcion: str
+	abreviatura: str

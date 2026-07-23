@@ -177,3 +177,18 @@ async def consultar_estados_transaccion():
 			status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
 			detail=f"Error al consultar estados de transacción: {str(e)}"
 		)
+
+#-- Consulta de Conceptos de Transacción.
+@router.get("/conceptos-transaccion")
+async def consultar_conceptos_transaccion():
+	"""
+	Consulta el listado de Conceptos de Transacción.
+	"""
+	try:
+		estados = await ConsultasService.consultar_conceptos_transaccion()
+		return estados
+	except Exception as e:
+		raise HTTPException(
+			status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+			detail=f"Error al consultar conceptos de transacción: {str(e)}"
+		)
